@@ -17,6 +17,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
         public static void StartReptile()
         {
             getMainPageList();
+            getNewsList();
         }
 
         private static void getMainPageList()
@@ -48,6 +49,11 @@ namespace HeritageWebserviceDotNetCore.Reptile
             {
                 doc.Save(file);
             }
+        }
+
+        public static void getNewsList()
+        {
+            
         }
     }
 }

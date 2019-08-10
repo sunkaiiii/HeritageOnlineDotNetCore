@@ -10,7 +10,7 @@ namespace HeritageWebserviceDotNetCore
     {
         static void Main(string[] args)
         {
-            GetIhChina.StartReptile();
+            GetIhChina.GetNewsList();
             //var client = new MongoClient("mongodb://localhost:27017");
             //var database = client.GetDatabase("heritage");
             //var collection = database.GetCollection<BsonDocument>("heritage");

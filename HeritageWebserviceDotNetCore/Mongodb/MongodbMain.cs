@@ -11,8 +11,9 @@ namespace HeritageWebserviceDotNetCore.Mongodb
         private static readonly Lazy<MongodbMain> lazy = new Lazy<MongodbMain>(() => new MongodbMain());
         public static MongodbMain Instance { get { return lazy.Value; } }
 
+        internal static readonly string NEWS_LIST = "news_list";
         private readonly MongoClient client;
-        private readonly IMongoDatabase database;
+        internal readonly IMongoDatabase database;
         private readonly IMongoCollection<BsonDocument> collection;
         private MongodbMain()
         {
@@ -25,15 +26,22 @@ namespace HeritageWebserviceDotNetCore.Mongodb
           
         }
 
-        internal void SaveMainpageNewsList(IEnumerable<BsonDocument> nodes)
+        public void SaveMainpageNewsList(IEnumerable<BsonDocument> nodes)
         {
             collection.InsertMany(nodes);
         }
 
-        internal void SaveNewsList(IEnumerable<BsonDocument> nodes)
+        public void SaveNewsList(IEnumerable<BsonDocument> nodes)
         {
-            var collection = database.GetCollection<BsonDocument>("news_list");
+            var collection = database.GetCollection<BsonDocument>(NEWS_LIST);
             collection.InsertMany(nodes);
+        }
+
+        public bool DeleteNews(BsonDocument filter)
+        {
+            var collection = database.GetCollection<BsonDocument>(NEWS_LIST);
+            var result = collection.FindOneAndDelete<BsonDocument>(filter);
+            return result != null;
         }
     }
 }

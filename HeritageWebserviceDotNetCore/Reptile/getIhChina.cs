@@ -4,6 +4,7 @@ using MongoDB.Bson;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -61,11 +62,6 @@ namespace HeritageWebserviceDotNetCore.Reptile
             public string data;
             public int more;
         };
-
-        private static async System.Threading.Tasks.Task<string> getRequestResultAsync(string pageURL)
-        {
-           return await client.GetAsync(pageURL).Result.Content.ReadAsStringAsync(); 
-        } 
       
         public static void GetNewsList()
         {
@@ -78,11 +74,8 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     return;
                 }
                 Console.WriteLine("starting process {0} page", page);
-                String pageURL = String.Format("{0}?category_id=9&page={1}&limit=0", NEWS_LIST_URL, page);
-                var request = WebRequest.Create(pageURL);
-                request.Method = "GET";
-                var responseStream = request.GetResponse().GetResponseStream();
-                var result = new StreamReader(responseStream).ReadToEnd().ToString();
+                string pageURL = String.Format("{0}?category_id=9&page={1}&limit=0", NEWS_LIST_URL, page);
+                var result = WebpageHelper.GetRequest(pageURL);
                 var jsonObject = JsonConvert.DeserializeObject<NewsListResponse>(result);
                 if(jsonObject.more!=1&&String.IsNullOrEmpty(jsonObject.data))
                 {
@@ -90,9 +83,43 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 }
                 var doc = new HtmlDocument();
                 doc.LoadHtml(jsonObject.data);
-                foreach(var node in doc.DocumentNode.Descendants())
+                var newsListNodes = from links in doc.DocumentNode.Descendants()
+                                    where links.Name == "div" && links.Attributes["class"] != null && links.Attributes["class"].Value == "list-item"
+                                    select links;
+                var newslistBsons = new List<BsonDocument>();
+                foreach (var node in newsListNodes)
                 {
-                    Console.WriteLine(node.InnerText);
+                    var newsBason = new BsonDocument();
+                    var imgNode = node.SelectSingleNode(".//img");
+                    if (imgNode != null)
+                    {
+                        newsBason.Add("image", imgNode.Attributes["src"].Value);
+
+                    }
+                    var titleNode = node.SelectSingleNode(".//div[@class='h16']/a");
+                    if(titleNode!=null)
+                    {
+                        newsBason.Add("link", titleNode.Attributes["href"].Value);
+                        newsBason.Add("title", titleNode.Attributes["title"].Value);
+                    }
+                    var dataNode = node.SelectSingleNode(".//div[@class='date']/div");
+                    if(dataNode!=null)
+                    {
+                        newsBason.Add("date", dataNode.InnerText);
+                    }
+                    var contentNode = node.SelectSingleNode(".//div[@class='p']");
+                    if(contentNode!=null)
+                    {
+                        newsBason.Add("content", contentNode.InnerText);
+                    }
+                    if(newsBason.Count()!=0)
+                    {
+                        newslistBsons.Add(newsBason);
+                    }
+                }
+                if(newslistBsons.Count!=0)
+                {
+                    MongodbMain.Instance.SaveNewsList(newslistBsons);
                 }
             }
         }

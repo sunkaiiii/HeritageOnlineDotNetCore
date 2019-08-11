@@ -7,7 +7,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
     public class WebPageSaver
     {
         private HtmlWeb htmlWeb = new HtmlWeb();
-        public static void SaveHtml(String url)
+        public static void SaveHtml(string url)
         {
             var web = new HtmlWeb();
             var doc = web.Load(url);
@@ -17,6 +17,24 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 doc.Save(file);
             }
         }
+
+        public static void SaveSimpleRequestResult(string url,string resultString)
+        {
+            var saveFileName = WebpageHelper.GetSubUrl(url);
+            using (StreamWriter file=new StreamWriter(saveFileName))
+            {
+                file.Write(resultString);
+            }
+        }
         
+        public static string GetSimpleRequestResult(string url)
+        {
+            string result;
+            using (StreamReader file = new StreamReader(WebpageHelper.GetSubUrl(url)))
+            {
+                result = file.ReadToEnd();
+            }
+            return result;
+        }
     }
 }

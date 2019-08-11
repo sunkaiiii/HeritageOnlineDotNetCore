@@ -29,5 +29,11 @@ namespace HeritageWebserviceDotNetCore.Mongodb
         {
             collection.InsertMany(nodes);
         }
+
+        internal void SaveNewsList(IEnumerable<BsonDocument> nodes)
+        {
+            var collection = database.GetCollection<BsonDocument>("news_list");
+            collection.InsertMany(nodes);
+        }
     }
 }

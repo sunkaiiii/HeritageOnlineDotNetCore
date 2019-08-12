@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks.Dataflow;
 
 namespace HeritageWebserviceDotNetCore.Reptile
 {
@@ -18,6 +19,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
         private const String MAIN_PAGE = "http://www.ihchina.cn/";
         private const String NEWS_LIST_URL = MAIN_PAGE + "Article/Index/getList.html";
         private static readonly HttpClient client = new HttpClient();
+        private static BufferBlock<string> imageTargetBlock=new BufferBlock<string>();
         private Dictionary<String, String> classificaton = new Dictionary<string, string> { { "新闻动态", "u11" }, { "论坛", "u12" }, { "专题报道", "u13" } };
 
         public static void StartReptile()
@@ -66,7 +68,8 @@ namespace HeritageWebserviceDotNetCore.Reptile
         public static void GetNewsList()
         {
             int errorTime = 0;
-            for (int page = 1; page < 255; page++)
+            var filesaver=WebPageSaver.SaveFileAsync(imageTargetBlock);
+            for (int page = 1; page < 2; page++)
             {
                 if (errorTime > 10)
                 {
@@ -90,17 +93,23 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 foreach (var node in newsListNodes)
                 {
                     var newsBason = new BsonDocument();
+                    var titleNode = node.SelectSingleNode(".//div[@class='h16']/a");
+                    if (titleNode != null)
+                    {
+                        var link = titleNode.Attributes["href"].Value;
+                        newsBason.Add("link", link);
+                        if (MongodbChecker.CheckNewsExist(link))
+                        {
+                            errorTime++;
+                            continue;
+                        }
+                        newsBason.Add("title", titleNode.Attributes["title"].Value);
+                    }
                     var imgNode = node.SelectSingleNode(".//img");
                     if (imgNode != null)
                     {
                         newsBason.Add("image", imgNode.Attributes["src"].Value);
-
-                    }
-                    var titleNode = node.SelectSingleNode(".//div[@class='h16']/a");
-                    if(titleNode!=null)
-                    {
-                        newsBason.Add("link", titleNode.Attributes["href"].Value);
-                        newsBason.Add("title", titleNode.Attributes["title"].Value);
+                        imageTargetBlock.Post(MAIN_PAGE+imgNode.Attributes["src"].Value);
                     }
                     var dataNode = node.SelectSingleNode(".//div[@class='date']/div");
                     if(dataNode!=null)
@@ -122,6 +131,9 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     MongodbMain.Instance.SaveNewsList(newslistBsons);
                 }
             }
+            imageTargetBlock.Complete();
+            filesaver.Wait();
         }
+
     }
 }

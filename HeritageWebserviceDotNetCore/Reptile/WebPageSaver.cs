@@ -1,5 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Net;
+using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using HtmlAgilityPack;
 
 namespace HeritageWebserviceDotNetCore.Reptile
@@ -44,6 +47,22 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 result = file.ReadToEnd();
             }
             return result;
+        }
+
+        public  static async Task<int> SaveFileAsync(ISourceBlock<string> source)
+        {
+            while (await source.OutputAvailableAsync())
+            {
+                WebClient wc = new WebClient();
+                if (!Directory.Exists("img"))
+                {
+                    Directory.CreateDirectory("img");
+                }
+                var imageUrl = source.Receive();
+                var savePath = Path.Combine(Directory.GetCurrentDirectory(), "img", WebpageHelper.GetSubUrl(imageUrl));
+                wc.DownloadFile(imageUrl, savePath);
+            }
+            return 1;
         }
     }
 }

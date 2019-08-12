@@ -8,8 +8,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
 {
     public static class WebpageHelper
     {
-        private readonly static HtmlWeb htmlWeb = new HtmlWeb();
-        public static string GetSubUrl(String url)
+        public static string GetSubUrl(string url)
         {
             var result = url;
             if (url.Contains(@"/"))

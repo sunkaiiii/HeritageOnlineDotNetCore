@@ -11,4 +11,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Reptile\getIhChina.cs" />
+  </ItemGroup>
 </Project>

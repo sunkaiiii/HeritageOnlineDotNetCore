@@ -2,11 +2,13 @@
 using System.IO;
 using System.Net;
 using System.Text;
+using HtmlAgilityPack;
 
 namespace HeritageWebserviceDotNetCore.Reptile
 {
     public static class WebpageHelper
     {
+        private readonly static HtmlWeb htmlWeb = new HtmlWeb();
         public static string GetSubUrl(String url)
         {
             var result = url;
@@ -38,6 +40,21 @@ namespace HeritageWebserviceDotNetCore.Reptile
             WebPageSaver.SaveSimpleRequestResult(url,result);
 #endif
             return result;
+        }
+
+        public static HtmlAgilityPack.HtmlDocument getHttpRequestDocument(string url)
+        {
+#if DEBUG
+            if(File.Exists(WebpageHelper.GetSubUrl(url)))
+            {
+                return WebPageSaver.GetHtmlDocument(url);
+            }
+#endif
+            var doc = htmlWeb.Load(url);
+#if DEBUG
+            WebPageSaver.SaveHtml(url, doc);
+#endif
+            return doc;
         }
     }
 }

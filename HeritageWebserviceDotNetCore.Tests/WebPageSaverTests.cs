@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using HeritageWebserviceDotNetCore.Reptile;
+using HtmlAgilityPack;
 using NUnit.Framework;
 
 namespace Tests
@@ -16,7 +17,9 @@ namespace Tests
         public void TryToSaveHtmlFile()
         {
             var url = "http://billie66.github.io/TLCL/book/chap01.html";
-            WebPageSaver.SaveHtml(url);
+            HtmlWeb htmlWeb = new HtmlWeb();
+            var doc = htmlWeb.Load(url);
+            WebPageSaver.SaveHtml(url,doc);
             Assert.IsTrue(File.Exists(WebpageHelper.GetSubUrl(url)));
         }
     }

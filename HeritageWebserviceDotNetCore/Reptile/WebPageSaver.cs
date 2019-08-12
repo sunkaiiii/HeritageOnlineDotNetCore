@@ -5,16 +5,25 @@ using HtmlAgilityPack;
 namespace HeritageWebserviceDotNetCore.Reptile
 {
     public class WebPageSaver
-    {
-        private HtmlWeb htmlWeb = new HtmlWeb();
-        public static void SaveHtml(string url)
+    { 
+        public static void SaveHtml(string url, HtmlAgilityPack.HtmlDocument doc)
         {
-            var web = new HtmlWeb();
-            var doc = web.Load(url);
             var saveFileName = WebpageHelper.GetSubUrl(url);
             using (StreamWriter file = new StreamWriter(saveFileName))
             {
                 doc.Save(file);
+            }
+        }
+
+        public static HtmlAgilityPack.HtmlDocument GetHtmlDocument(string url)
+        {
+            var saveFileName = WebpageHelper.GetSubUrl(url);
+            using(StreamReader fileStreamReader=new StreamReader(saveFileName))
+            {
+                var response = fileStreamReader.ReadToEnd();
+                var doc = new HtmlAgilityPack.HtmlDocument();
+                doc.LoadHtml(response);
+                return doc;
             }
         }
 

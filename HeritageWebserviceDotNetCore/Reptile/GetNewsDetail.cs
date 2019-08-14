@@ -18,7 +18,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 var doc = WebpageHelper.getHttpRequestDocument(urlSource.Receive());
                 var titleNode = doc.DocumentNode.SelectSingleNode("//div[@class='article-title']");
                 if (titleNode == null)
-                    break;
+                    continue;
                 var bson = new BsonDocument();
                 var titleNameNode = titleNode.SelectSingleNode(".//div[@class='h24']");
                 if (titleNameNode != null)
@@ -51,7 +51,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     if (picNode != null)
                     {
                         lineDic["img"] = picNode.Attributes["src"].Value;
-                        block.Post(picNode.Attributes["src"].Value);
+                        block.Post(GetIhChina.MAIN_PAGE + picNode.Attributes["src"].Value);
                     }
                     else {
                         lineDic["content"] = node.InnerText;
@@ -90,6 +90,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                         bson.Add("relativeNews", relativeNewsList);
                     }
                 }
+                Console.WriteLine(bson);
                 MongodbMain.Instance.SaveNewsDetail(bson);
             }
             return 1;

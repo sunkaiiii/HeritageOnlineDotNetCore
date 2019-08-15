@@ -12,6 +12,7 @@ namespace HeritageWebserviceDotNetCore.Mongodb
         public static MongodbMain Instance { get { return lazy.Value; } }
 
         internal static readonly string NEWS_LIST = "news_list";
+        internal static readonly string NEWS_DETAIL = "news_detail";
         private readonly MongoClient client;
         internal readonly IMongoDatabase database;
         private readonly IMongoCollection<BsonDocument> collection;
@@ -42,6 +43,12 @@ namespace HeritageWebserviceDotNetCore.Mongodb
             var collection = database.GetCollection<BsonDocument>(NEWS_LIST);
             var result = collection.FindOneAndDelete<BsonDocument>(filter);
             return result != null;
+        }
+
+        public void SaveNewsDetail(BsonDocument bson)
+        {
+            var collection = database.GetCollection<BsonDocument>(NEWS_DETAIL);
+            collection.InsertOne(bson);
         }
     }
 }

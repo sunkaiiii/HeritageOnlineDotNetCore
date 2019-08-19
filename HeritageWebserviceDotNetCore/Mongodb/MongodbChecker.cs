@@ -24,5 +24,11 @@ namespace HeritageWebserviceDotNetCore.Mongodb
             var collection = MongodbMain.Instance.database.GetCollection<BsonDocument>(MongodbMain.NEWS_DETAIL);
             return checkLink(collection, newsUrl);
         }
+
+        public static bool CheckForumsListExist(string forumsUrl)
+        {
+            var collection = MongodbMain.Instance.database.GetCollection<BsonDocument>(MongodbMain.FORUMS_LIST);
+            return checkLink(collection, forumsUrl);
+        }
     }
 }

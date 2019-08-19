@@ -13,6 +13,8 @@ namespace HeritageWebserviceDotNetCore.Mongodb
 
         internal static readonly string NEWS_LIST = "news_list";
         internal static readonly string NEWS_DETAIL = "news_detail";
+        internal static readonly string FORUMS_LIST = "forums_list";
+        internal static readonly string FORUMS_DETAIL = "forums_detail";
         private readonly MongoClient client;
         internal readonly IMongoDatabase database;
         private readonly IMongoCollection<BsonDocument> collection;
@@ -48,6 +50,18 @@ namespace HeritageWebserviceDotNetCore.Mongodb
         public void SaveNewsDetail(BsonDocument bson)
         {
             var collection = database.GetCollection<BsonDocument>(NEWS_DETAIL);
+            collection.InsertOne(bson);
+        }
+
+        public void SaveForumsList(IEnumerable<BsonDocument> bsons)
+        {
+            var collection = database.GetCollection<BsonDocument>(FORUMS_LIST);
+            collection.InsertMany(bsons);
+        }
+
+        public void SaveForumsDetail(BsonDocument bson)
+        {
+            var collection = database.GetCollection<BsonDocument>(FORUMS_DETAIL);
             collection.InsertOne(bson);
         }
     }

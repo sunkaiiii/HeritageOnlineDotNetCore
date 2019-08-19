@@ -27,6 +27,10 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 }
                 var imageUrl = source.Receive();
                 var savePath = Path.Combine(Directory.GetCurrentDirectory(), "img", WebpageHelper.GetSubUrl(imageUrl));
+                if(File.Exists(savePath))
+                {
+                    continue;
+                }
                 wc.DownloadFile(imageUrl, savePath);
             }
             return 1;

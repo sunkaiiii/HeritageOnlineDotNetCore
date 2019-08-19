@@ -15,11 +15,17 @@ namespace HeritageWebserviceDotNetCore.Reptile
             BufferBlock<string> block = WebImageSaver.Instance.ImageTargetBlock;
             while(await urlSource.OutputAvailableAsync())
             {
-                var doc = WebpageHelper.getHttpRequestDocument(urlSource.Receive());
+                var url = urlSource.Receive();
+                if(MongodbChecker.CheckNewsDetailExist(url))
+                {
+                    continue;
+                }
+                var doc = WebpageHelper.getHttpRequestDocument(url);
                 var titleNode = doc.DocumentNode.SelectSingleNode("//div[@class='article-title']");
                 if (titleNode == null)
                     continue;
                 var bson = new BsonDocument();
+                bson.Add("link", url);
                 var titleNameNode = titleNode.SelectSingleNode(".//div[@class='h24']");
                 if (titleNameNode != null)
                 {

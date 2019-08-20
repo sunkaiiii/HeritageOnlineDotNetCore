@@ -42,8 +42,13 @@ namespace HeritageWebserviceDotNetCore.Mongodb
 
         public bool DeleteNews(BsonDocument filter)
         {
-            var collection = database.GetCollection<BsonDocument>(NEWS_LIST);
-            var result = collection.FindOneAndDelete<BsonDocument>(filter);
+            var result = database.GetCollection<BsonDocument>(NEWS_LIST).FindOneAndDelete<BsonDocument>(filter);
+            return result != null;
+        }
+
+        public bool DeleteNewsDetail(BsonDocument filter)
+        {
+            var result = database.GetCollection<BsonDocument>(NEWS_DETAIL).FindOneAndDelete<BsonDocument>(filter);
             return result != null;
         }
 

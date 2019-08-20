@@ -14,11 +14,22 @@ namespace HeritageWebserviceDotNetCore.Tests
         {
         }
 
+        private BsonDocument createTestBson()
+        {
+            var bson = new BsonDocument();
+            bson.Add("link", getTestLink());
+            return bson;
+        }
+
+        private string getTestLink()
+        {
+            return "/23456776543/345678765432/34567765432/56765432";
+        }
+
         [Test]
         public void TestNewsListChecker()
         {
-            var bson = new BsonDocument();
-            bson.Add("link", "/23456776543/345678765432/34567765432/56765432");
+            var bson = createTestBson();
             var insertList = new List<BsonDocument>();
             insertList.Add(bson);
             MongodbMain.Instance.SaveNewsList(insertList);
@@ -32,6 +43,16 @@ namespace HeritageWebserviceDotNetCore.Tests
             Assert.IsTrue(result);
             shouldBeTrue = MongodbChecker.CheckNewsExist(url1);
             Assert.IsTrue(shouldBeTrue);
+        }
+
+        [Test]
+        public void TestNewsDetailChecker()
+        {
+            var bson = createTestBson();
+            Assert.IsFalse(MongodbChecker.CheckForumsDetailExist(getTestLink()));
+            MongodbMain.Instance.SaveNewsDetail(bson);
+            Assert.IsTrue(MongodbMain.Instance.DeleteNewsDetail(bson));
+            Assert.IsFalse(MongodbChecker.CheckNewsDetailExist(getTestLink()));
         }
     }
 }

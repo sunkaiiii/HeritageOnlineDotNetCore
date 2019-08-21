@@ -59,7 +59,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 }
                 if (result.Count > 0)
                 {
-                    MongodbMain.Instance.SaveForumsList(result);
+                    MongodbSaver.SaveForumsList(result);
                 }
             }
             block.Complete();

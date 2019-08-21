@@ -84,7 +84,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 }
                 if (newslistBsons.Count != 0)
                 {
-                    MongodbMain.Instance.SaveNewsList(newslistBsons);
+                    MongodbSaver.SaveNewsList(newslistBsons);
                 }
             }
             newsDetailTargetBlock.Complete();

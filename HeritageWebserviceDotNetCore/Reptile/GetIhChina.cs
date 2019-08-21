@@ -47,7 +47,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                                               where links.Name == "a" && links.Attributes["href"] != null && links.InnerText.Trim().Length > 0 && links.Attributes["href"].Value.Contains("news_details")
                                               select new BsonDocument().Add("url", links.Attributes["href"].Value).Add("text", links.InnerText).Add("date", links.ParentNode.ParentNode.FirstChild.InnerText);
             //TODO 第一新闻有图片页，且格式不同，需要适配
-            MongodbMain.Instance.SaveMainpageNewsList(nodes);
+            MongodbSaver.SaveMainpageNewsList(nodes);
             foreach (var node in nodes)
             {
                 Console.WriteLine(node["url"].AsBsonValue + " " + node["text"].AsBsonValue + " " + node["date"].AsBsonValue);

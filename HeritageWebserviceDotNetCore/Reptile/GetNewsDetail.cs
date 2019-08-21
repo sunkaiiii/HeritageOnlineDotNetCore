@@ -15,14 +15,14 @@ namespace HeritageWebserviceDotNetCore.Reptile
         public static async Task<int> GenerateNewsDetail(ISourceBlock<string> urlSource)
         {
             Checker checker = MongodbChecker.CheckNewsDetailExist;
-            Saver saver = MongodbMain.Instance.SaveNewsDetail;
+            Saver saver = MongodbSaver.SaveNewsDetail;
             return await processBufferBlock(urlSource,checker, saver);
         }
 
         public static async Task<int> GenerateForumDetail(ISourceBlock<string> urlSource)
         {
             Checker checker = MongodbChecker.CheckForumsDetailExist;
-            Saver saver = MongodbMain.Instance.SaveForumsDetail;
+            Saver saver = MongodbSaver.SaveForumsDetail;
             return await processBufferBlock (urlSource, checker, saver);
         }
 

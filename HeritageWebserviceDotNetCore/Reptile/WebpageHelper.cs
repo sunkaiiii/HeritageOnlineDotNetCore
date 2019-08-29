@@ -2,7 +2,9 @@
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks.Dataflow;
 using HtmlAgilityPack;
+using MongoDB.Bson;
 
 namespace HeritageWebserviceDotNetCore.Reptile
 {
@@ -55,6 +57,42 @@ namespace HeritageWebserviceDotNetCore.Reptile
             WebPageSaver.SaveHtml(url, doc);
 #endif
             return doc;
+        }
+
+        public delegate bool Checker(string url);
+        public static BsonDocument AnalizeGeneralListInformation(HtmlAgilityPack.HtmlNode node,Checker checker)
+        {
+            var bson = new BsonDocument();
+            var linkNode = node.SelectSingleNode(".//div[@class='h16']/a");
+            if (linkNode != null)
+            {
+                if (checker(linkNode.Attributes["href"].Value))
+                {
+                    return null;
+                }
+                var link = linkNode.Attributes["href"].Value;
+                bson.Add("link", link);
+                bson.Add("title", linkNode.InnerText);
+            }
+            var dateNode = node.SelectSingleNode(".//div[@class='date']");
+            if (dateNode != null)
+            {
+                bson.Add("date", dateNode.InnerText);
+            }
+            var contentNode = node.SelectSingleNode(".//div[@class='p']");
+            if (contentNode != null)
+            {
+                bson.Add("content", contentNode.InnerText);
+            }
+            var imageNode = node.SelectSingleNode(".//img");
+            if (imageNode != null)
+            {
+                var imgUrl = imageNode.Attributes["src"].Value;
+                bson.Add("img", imgUrl);
+                WebImageSaver.Instance.ImageTargetBlock.Post(GetIhChina.MAIN_PAGE+imgUrl);
+            }
+            Console.WriteLine(bson.ToString());
+            return bson;
         }
     }
 }

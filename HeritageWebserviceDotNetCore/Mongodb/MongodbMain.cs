@@ -15,6 +15,8 @@ namespace HeritageWebserviceDotNetCore.Mongodb
         internal static readonly string NEWS_DETAIL = "news_detail";
         internal static readonly string FORUMS_LIST = "forums_list";
         internal static readonly string FORUMS_DETAIL = "forums_detail";
+        internal static readonly string SPECIFIC_TOPIC = "specific_topic";
+        internal static readonly string SPECIFIC_TOPIC_DETAIL = "specific_topic_detail";
         private readonly MongoClient client;
         internal readonly IMongoDatabase Database;
         private MongodbMain()

@@ -26,6 +26,13 @@ namespace HeritageWebserviceDotNetCore.Reptile
             return await processBufferBlock (urlSource, checker, saver);
         }
 
+        internal static async Task<int> GenerateSpecificTopicDetail(ISourceBlock<string> urlSource)
+        {
+            Checker checker = (url) => false;
+            Saver saver = MongodbSaver.SaveSpecificTopicDetail;
+            return await processBufferBlock(urlSource, checker, saver);
+        }
+
         private static async Task<int> processBufferBlock(ISourceBlock<string> urlSource,Checker checker,Saver saver)
         {
             BufferBlock<string> block = WebImageSaver.Instance.ImageTargetBlock;
@@ -124,5 +131,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
             Console.WriteLine(bson);
             return bson;
         }
+
+        
     }
 }

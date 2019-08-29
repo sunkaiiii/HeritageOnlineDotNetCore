@@ -44,5 +44,15 @@ namespace HeritageWebserviceDotNetCore.Mongodb
         {
             InsertOne(bson, MongodbMain.FORUMS_DETAIL);
         }
+
+        internal static void SaveSpecificTopicList(IEnumerable<BsonDocument> bsons)
+        {
+            InsertMany(bsons, MongodbMain.SPECIFIC_TOPIC);
+        }
+
+        public static void SaveSpecificTopicDetail(BsonDocument bson)
+        {
+            InsertOne(bson, MongodbMain.SPECIFIC_TOPIC_DETAIL);
+        }
     }
 }

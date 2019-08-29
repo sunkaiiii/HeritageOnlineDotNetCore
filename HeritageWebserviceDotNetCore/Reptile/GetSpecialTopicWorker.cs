@@ -1,42 +1,41 @@
-﻿using HeritageWebserviceDotNetCore.Mongodb;
-using MongoDB.Bson;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks.Dataflow;
+using HeritageWebserviceDotNetCore.Mongodb;
+using MongoDB.Bson;
 
 namespace HeritageWebserviceDotNetCore.Reptile
 {
-    class GetForumsWorker
+    public class GetSpecialTopicWorker
     {
-        public static void GetForumsList()
+        public static void GetSpecialTopic()
         {
             var block = new BufferBlock<string>();
-            var task = GetNewsDetail.GenerateForumDetail(block);
-            for(int i=3;i<4;i++)
+            var task = GetNewsDetail.GenerateSpecificTopicDetail(block);
+            for(int i=1;i<2;i++)
             {
-                var listUrl = String.Format("http://www.ihchina.cn/luntan/p/{0}.html", i);
+                var listUrl = String.Format("http://www.ihchina.cn/news_1/p/{0}.html", i);
                 Console.WriteLine("starting process page:{0}", listUrl);
                 var doc = WebpageHelper.getHttpRequestDocument(listUrl);
-                var listNodes = doc.DocumentNode.SelectNodes("//div[@id='datalist']/div[@class='list-item']");
-                if (listNodes == null)
+                var listNodes = doc.DocumentNode.SelectNodes("//div[@class='list-mod3']/div[@class='list-item']");
+                if(listNodes==null)
                 {
-                    continue ;
+                    continue;
                 }
                 List<BsonDocument> result = new List<BsonDocument>();
                 foreach(var node in listNodes)
                 {
-                    var bson = WebpageHelper.AnalizeGeneralListInformation(node, MongodbChecker.CheckForumsDetailExist);
+                    var bson = WebpageHelper.AnalizeGeneralListInformation(node, (url)=>false);
                     if (bson != null)
                     {
-                        var link = bson.GetElement("link").ToString();
+                        var link = bson.GetValue("link").ToString();
                         block.Post(GetIhChina.MAIN_PAGE + link);
                         result.Add(bson);
                     }
                 }
                 if (result.Count > 0)
                 {
-                    MongodbSaver.SaveForumsList(result);
+                    MongodbSaver.SaveSpecificTopicList(result);
                 }
             }
             block.Complete();

@@ -21,7 +21,6 @@ namespace HeritageWebserviceDotNetCore.Reptile
         internal const string NEWS_LIST_URL = MAIN_PAGE + "/Article/Index/getList.html";
         private static readonly HttpClient client = new HttpClient();
         private Dictionary<String, String> classificaton = new Dictionary<string, string> { { "新闻动态", "u11" }, { "论坛", "u12" }, { "专题报道", "u13" } };
-
         public static void StartReptile()
         {
             var imageTargetBlock = WebImageSaver.Instance.ImageTargetBlock;

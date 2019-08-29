@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeritageWebserviceDotNetCor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeritageWebserviceDotNetCore.Tests", "HeritageWebserviceDotNetCore.Tests\HeritageWebserviceDotNetCore.Tests.csproj", "{A83356B9-407B-4349-93AD-B9BBF6674426}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeritageWebService", "HeritageWebService\HeritageWebService.csproj", "{0F74E4FA-9A57-4010-88EE-C1E8D41AF46F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A83356B9-407B-4349-93AD-B9BBF6674426}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A83356B9-407B-4349-93AD-B9BBF6674426}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A83356B9-407B-4349-93AD-B9BBF6674426}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F74E4FA-9A57-4010-88EE-C1E8D41AF46F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F74E4FA-9A57-4010-88EE-C1E8D41AF46F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F74E4FA-9A57-4010-88EE-C1E8D41AF46F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F74E4FA-9A57-4010-88EE-C1E8D41AF46F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,7 +13,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
         {
             var block = new BufferBlock<string>();
             var task = GetNewsDetail.GenerateForumDetail(block);
-            for(int i=3;i<4;i++)
+            for(int i=1;i<255;i++)
             {
                 var listUrl = String.Format("http://www.ihchina.cn/luntan/p/{0}.html", i);
                 Console.WriteLine("starting process page:{0}", listUrl);

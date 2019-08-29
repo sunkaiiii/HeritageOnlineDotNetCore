@@ -24,7 +24,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
            BufferBlock<string> newsDetailTargetBlock = new BufferBlock<string>();
            int errorTime = 0;
             var newsDetailPageGenerate = GetNewsDetail.GenerateNewsDetail(newsDetailTargetBlock);
-            for (int page = 1; page < 2; page++)
+            for (int page = 1; page < 255; page++)
             {
                 if (errorTime > 10)
                 {

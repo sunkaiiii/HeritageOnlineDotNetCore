@@ -52,7 +52,16 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 return WebPageSaver.GetHtmlDocument(url);
             }
 #endif
-            var doc = htmlWeb.Load(url);
+            HtmlDocument doc;
+            try
+            {
+                 doc = htmlWeb.Load(url); 
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                return new HtmlDocument();
+            }
 #if DEBUG
             WebPageSaver.SaveHtml(url, doc);
 #endif

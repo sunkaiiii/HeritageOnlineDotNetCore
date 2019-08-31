@@ -20,7 +20,9 @@ namespace HeritageWebService.Service
         }
 
         public List<MainNewsList> Get() => _mainLists.Find(newsList => true).ToList();
-        public MainNewsList Get(string id) => _mainLists.Find<MainNewsList>(newsList => newsList.Id == id).FirstOrDefault();
+        public MainNewsList Get(string id) => _mainLists.Find(newsList => newsList.Id == id).FirstOrDefault();
+
+
         public MainNewsList Create(MainNewsList newsList)
         {
             _mainLists.InsertOne(newsList);
@@ -28,6 +30,9 @@ namespace HeritageWebService.Service
         }
         public void Update(string id, MainNewsList newsIn) => _mainLists.ReplaceOne(news => news.Id == id, newsIn);
         public void Remove(MainNewsList newsIn) => _mainLists.DeleteOne(news => news.Id == newsIn.Id);
+
+
+
         public void Remove(string id) => _mainLists.DeleteOne(news => news.Id == id);
     }
 }

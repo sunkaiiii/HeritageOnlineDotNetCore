@@ -18,7 +18,6 @@ namespace HeritageWebserviceDotNetCore.Reptile
             Saver saver = MongodbSaver.SaveNewsDetail;
             return await processBufferBlock(urlSource,checker, saver);
         }
-
         public static async Task<int> GenerateForumDetail(ISourceBlock<string> urlSource)
         {
             Checker checker = MongodbChecker.CheckForumsDetailExist;
@@ -88,11 +87,13 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 var picNode = node.SelectSingleNode(".//img");
                 if (picNode != null)
                 {
-                    lineDic["img"] = picNode.Attributes["src"].Value;
+                    lineDic["type"] = "img";
+                    lineDic["content"] = picNode.Attributes["src"].Value;
                     imageBlock.Post(GetIhChina.MAIN_PAGE + picNode.Attributes["src"].Value);
                 }
                 else
                 {
+                    lineDic["type"] = "text";
                     lineDic["content"] = node.InnerText;
                 }
                 contentList.Add(lineDic);

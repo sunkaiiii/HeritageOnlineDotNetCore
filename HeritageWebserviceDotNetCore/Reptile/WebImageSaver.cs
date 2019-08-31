@@ -7,13 +7,13 @@ namespace HeritageWebserviceDotNetCore.Reptile
 {
     class WebImageSaver
     {
-        private static readonly Lazy<WebImageSaver> lazy = new Lazy<WebImageSaver>(()=>new WebImageSaver());
-        public static WebImageSaver Instance {get {return lazy.Value;}}
+        private static readonly Lazy<WebImageSaver> lazy = new Lazy<WebImageSaver>(() => new WebImageSaver());
+        public static WebImageSaver Instance { get { return lazy.Value; } }
 
-        public BufferBlock<string> ImageTargetBlock{get;}
+        public BufferBlock<string> ImageTargetBlock { get; }
         public WebImageSaver()
         {
-            ImageTargetBlock=new BufferBlock<string>();
+            ImageTargetBlock = new BufferBlock<string>();
         }
 
         public async Task<int> SaveFileAsync(ISourceBlock<string> source)
@@ -27,9 +27,13 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 }
                 var imageUrl = source.Receive();
                 var savePath = Path.Combine(Directory.GetCurrentDirectory(), "img", WebpageHelper.GetSubUrl(imageUrl));
-                if(File.Exists(savePath))
+                if (File.Exists(savePath))
                 {
                     continue;
+                }
+                if (!imageUrl.StartsWith(GetIhChina.MAIN_PAGE))
+                {
+                    imageUrl = GetIhChina.MAIN_PAGE + imageUrl;
                 }
                 wc.DownloadFile(imageUrl, savePath);
             }

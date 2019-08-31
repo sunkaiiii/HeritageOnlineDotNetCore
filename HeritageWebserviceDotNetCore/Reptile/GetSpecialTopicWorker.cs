@@ -12,7 +12,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
         {
             var block = new BufferBlock<string>();
             var task = GetNewsDetail.GenerateSpecificTopicDetail(block);
-            for(int i=1;i<255;i++)
+            for(int i=1;i<20;i++)
             {
                 var listUrl = String.Format("http://www.ihchina.cn/news_1/p/{0}.html", i);
                 Console.WriteLine("starting process page:{0}", listUrl);
@@ -29,7 +29,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     if (bson != null)
                     {
                         var link = bson.GetValue("link").ToString();
-                        block.Post(GetIhChina.MAIN_PAGE + link);
+                        block.Post(link);
                         result.Add(bson);
                     }
                 }

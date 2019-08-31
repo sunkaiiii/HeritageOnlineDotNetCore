@@ -52,6 +52,10 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 return WebPageSaver.GetHtmlDocument(url);
             }
 #endif
+            if(!url.StartsWith(GetIhChina.MAIN_PAGE))
+            {
+                url = GetIhChina.MAIN_PAGE + url;
+            }
             HtmlDocument doc;
             try
             {

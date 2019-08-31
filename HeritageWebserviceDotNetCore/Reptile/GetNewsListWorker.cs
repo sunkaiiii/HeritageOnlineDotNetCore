@@ -24,7 +24,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
            BufferBlock<string> newsDetailTargetBlock = new BufferBlock<string>();
            int errorTime = 0;
             var newsDetailPageGenerate = GetNewsDetail.GenerateNewsDetail(newsDetailTargetBlock);
-            for (int page = 1; page < 255; page++)
+            for (int page = 1; page < 20; page++)
             {
                 if (errorTime > 10)
                 {
@@ -57,7 +57,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                             errorTime++;
                             continue;
                         }
-                        newsDetailTargetBlock.Post(GetIhChina.MAIN_PAGE + link);
+                        newsDetailTargetBlock.Post(link);
                         newsBason.Add("link", link);
                         newsBason.Add("title", titleNode.Attributes["title"].Value);
                     }

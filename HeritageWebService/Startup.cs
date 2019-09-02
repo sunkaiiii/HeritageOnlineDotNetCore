@@ -78,11 +78,6 @@ namespace HeritageWebService
             }
 
             app.UseStaticFiles();
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(@"C:\Users\sunkai\Documents\GitHub\HeritageWebserviceDotNetCore\HeritageWebService\img"),
-                RequestPath = string.Empty
-            }) ;
             //允许中间件为生成的JSON文档和Swagger UI提供服务
             app.UseSwagger();
 

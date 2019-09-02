@@ -26,6 +26,19 @@ namespace HeritageWebserviceDotNetCore.Reptile
             return urlBuilder.ToString();
         }
 
+        public static string CorrectRequestString(string url)
+        {
+            if (!url.StartsWith(GetIhChina.MAIN_PAGE)) //当连接不是以MAIN_PAGE开头的时候，为期添加HOST_NAME
+            {
+                if (!url.StartsWith(@"/")) //有些时候，解析的link会添加奇怪的字符，剪裁到第一个链接出现
+                {
+                    url = url.Substring(url.IndexOf(@"/"));
+                }
+                url = GetIhChina.MAIN_PAGE + url;
+            }
+            return url;
+        }
+
         public static string GetRequest(string url)
         {
 #if DEBUG
@@ -52,10 +65,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 return WebPageSaver.GetHtmlDocument(url);
             }
 #endif
-            if(!url.StartsWith(GetIhChina.MAIN_PAGE))
-            {
-                url = GetIhChina.MAIN_PAGE + url;
-            }
+            url = CorrectRequestString(url);
             HtmlDocument doc;
             try
             {

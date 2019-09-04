@@ -54,6 +54,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                         var link = titleNode.Attributes["href"].Value;
                         if (MongodbChecker.CheckNewsExist(link))
                         {
+                            Console.WriteLine("duplicated url: page {0}", link);
                             errorTime++;
                             continue;
                         }

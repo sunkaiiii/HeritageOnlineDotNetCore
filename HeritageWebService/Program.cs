@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using HeritageWebserviceDotNetCore.Reptile;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +17,7 @@ namespace HeritageWebService
     {
         public static void Main(string[] args)
         {
+            ThreadPool.QueueUserWorkItem((state)=>GetIhChina.StartReptile());
             CreateWebHostBuilder(args).Build().Run();
         }
 

@@ -13,7 +13,8 @@ namespace HeritageWebserviceDotNetCore.Reptile
         {
             var block = new BufferBlock<string>();
             var task = GetNewsDetail.GenerateForumDetail(block);
-            for(int i=1;i<20;i++)
+            int errorTime = 0;
+            for(int i=1;i<20&&errorTime<10;i++)
             {
                 var listUrl = String.Format("http://www.ihchina.cn/luntan/p/{0}.html", i);
                 Console.WriteLine("starting process page:{0}", listUrl);
@@ -26,7 +27,12 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 List<BsonDocument> result = new List<BsonDocument>();
                 foreach(var node in listNodes)
                 {
-                    var bson = WebpageHelper.AnalizeGeneralListInformation(node, MongodbChecker.CheckForumsDetailExist);
+                    var bson = WebpageHelper.AnalizeGeneralListInformation(node, MongodbChecker.CheckForumsListExist);
+                    if(bson==null)
+                    {
+                        errorTime++;
+                        Console.WriteLine("duplicated url: page {0}", i);
+                    }
                     if (bson != null)
                     {
                         var link = bson.GetElement("link").ToString();

@@ -10,42 +10,54 @@ namespace HeritageWebserviceDotNetCore.Reptile
 {
     public static class GetNewsDetail
     {
+        public readonly static int DUPLICATED_NEWS = 1;
+        public readonly static int PROCESS_SUCCESS = 0;
         private delegate bool Checker(string url);
         private delegate void Saver(BsonDocument bson);
         public static async Task<int> GenerateNewsDetail(ISourceBlock<string> urlSource)
         {
             Checker checker = MongodbChecker.CheckNewsDetailExist;
             Saver saver = MongodbSaver.SaveNewsDetail;
-            return await processBufferBlock(urlSource,checker, saver);
+            return await processBufferBlock(urlSource, checker, saver);
         }
         public static async Task<int> GenerateForumDetail(ISourceBlock<string> urlSource)
         {
             Checker checker = MongodbChecker.CheckForumsDetailExist;
             Saver saver = MongodbSaver.SaveForumsDetail;
-            return await processBufferBlock (urlSource, checker, saver);
+            return await processBufferBlock(urlSource, checker, saver);
         }
 
         internal static async Task<int> GenerateSpecificTopicDetail(ISourceBlock<string> urlSource)
         {
-            Checker checker = (url) => false;
+            Checker checker = MongodbChecker.CheckSpecialListNewsDetailExist;
             Saver saver = MongodbSaver.SaveSpecificTopicDetail;
             return await processBufferBlock(urlSource, checker, saver);
         }
 
-        private static async Task<int> processBufferBlock(ISourceBlock<string> urlSource,Checker checker,Saver saver)
+        private static async Task<int> processBufferBlock(ISourceBlock<string> urlSource, Checker checker, Saver saver)
         {
             BufferBlock<string> block = WebImageSaver.Instance.ImageTargetBlock;
+            var errorTime = 0;
             while (await urlSource.OutputAvailableAsync())
             {
+                if(errorTime==10)
+                {
+                    return DUPLICATED_NEWS;
+                }
                 var url = urlSource.Receive();
                 if (checker(url))
                 {
+                    Console.WriteLine("duplicated url: {0}", url);
+                    errorTime++;
                     continue;
                 }
                 var bson = processDetailPage(url, block);
-                saver(bson);
+                if (bson != null)
+                {
+                    saver(bson);
+                }
             }
-            return 1;
+            return PROCESS_SUCCESS; ;
         }
 
         private static BsonDocument processDetailPage(string url, BufferBlock<string> imageBlock)
@@ -134,6 +146,6 @@ namespace HeritageWebserviceDotNetCore.Reptile
             return bson;
         }
 
-        
+
     }
 }

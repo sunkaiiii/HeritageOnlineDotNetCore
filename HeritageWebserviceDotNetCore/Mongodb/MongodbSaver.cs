@@ -15,7 +15,7 @@ namespace HeritageWebserviceDotNetCore.Mongodb
 
         private static void InsertOne(BsonDocument bson, string collectionName)
         {
-            if (bson.ElementCount == 0)
+            if (bson == null || bson.ElementCount == 0)
                 return;
             var collection = MongodbMain.Instance.Database.GetCollection<BsonDocument>(collectionName);
             collection.InsertOne(bson);

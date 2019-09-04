@@ -78,6 +78,16 @@ namespace HeritageWebService
             }
 
             app.UseStaticFiles();
+            var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "img");
+            if (!Directory.Exists(imagePath))
+            {
+                Directory.CreateDirectory(imagePath);
+            }
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "img")),
+                RequestPath = "/img"
+            });
             //允许中间件为生成的JSON文档和Swagger UI提供服务
             app.UseSwagger();
 

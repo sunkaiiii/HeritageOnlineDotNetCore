@@ -60,6 +60,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
             return PROCESS_SUCCESS; ;
         }
 
+        private static BsonDocument bson = new BsonDocument();
         private static BsonDocument processDetailPage(string url, BufferBlock<string> imageBlock)
         {
             Console.WriteLine("starting process: " + url + "....");
@@ -67,7 +68,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
             var titleNode = doc.DocumentNode.SelectSingleNode("//div[@class='article-title']");
             if (titleNode == null)
                 return null;
-            var bson = new BsonDocument();
+            bson.Clear();
             bson.Add("link", url);
             var titleNameNode = titleNode.SelectSingleNode(".//div[@class='h24']");
             if (titleNameNode != null)
@@ -75,6 +76,10 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 bson.Add("title", titleNameNode.InnerText.Replace("\t", "")); //规格化文字，TODO 未完成
             }
             var titleSubItemsNodes = titleNode.SelectNodes(".//div[@class='sub']/span[@class='sub-item']");
+            if(titleSubItemsNodes==null)
+            {
+                return null;
+            }
             var subTitleList = new BsonArray();
             foreach (var subItemNode in titleSubItemsNodes)
             {
@@ -93,6 +98,10 @@ namespace HeritageWebserviceDotNetCore.Reptile
             //开始读取内容
             var contentList = new BsonArray();
             var contentNodes = doc.DocumentNode.SelectNodes("//div[@class='article-cont']/p");
+            if(contentNodes==null)
+            {
+                return null;
+            }
             foreach (var node in contentNodes)
             {
                 var lineDic = new BsonDocument();

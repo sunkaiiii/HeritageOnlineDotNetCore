@@ -47,7 +47,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 var newslistBsons = new List<BsonDocument>();
                 foreach (var node in newsListNodes)
                 {
-                    var newsBason = new BsonDocument();
+                    var newsBson = new BsonDocument();
                     var titleNode = node.SelectSingleNode(".//div[@class='h16']/a");
                     if (titleNode != null)
                     {
@@ -59,28 +59,38 @@ namespace HeritageWebserviceDotNetCore.Reptile
                             continue;
                         }
                         newsDetailTargetBlock.Post(link);
-                        newsBason.Add("link", link);
-                        newsBason.Add("title", titleNode.Attributes["title"].Value);
+                        newsBson.Add("link", link);
+                        newsBson.Add("title", titleNode.Attributes["title"].Value);
                     }
                     var imgNode = node.SelectSingleNode(".//img");
                     if (imgNode != null)
                     {
-                        newsBason.Add("image", imgNode.Attributes["src"].Value);
+                        newsBson.Add("image", imgNode.Attributes["src"].Value);
                         imageTargetBlock.Post(GetIhChina.MAIN_PAGE + imgNode.Attributes["src"].Value);
                     }
                     var dataNode = node.SelectSingleNode(".//div[@class='date']/div");
                     if (dataNode != null)
                     {
-                        newsBason.Add("date", dataNode.InnerText);
+                        newsBson.Add("date", dataNode.InnerText);
                     }
                     var contentNode = node.SelectSingleNode(".//div[@class='p']");
                     if (contentNode != null)
                     {
-                        newsBason.Add("content", contentNode.InnerText);
+                        newsBson.Add("content", contentNode.InnerText);
                     }
-                    if (newsBason.Count() != 0)
+                    if (newsBson.Count() != 0)
                     {
-                        newslistBsons.Add(newsBason);
+                        newslistBsons.Add(newsBson);
+                    }
+                    //每10条进行一次数据库插入，减少内存负担
+                    if (newslistBsons.Count == 10)
+                    {
+                        MongodbSaver.SaveNewsList(newslistBsons);
+                        for(int i=0;i<10;i++)
+                        {
+                            newslistBsons[i] = null;
+                        }
+                        newslistBsons.Clear();
                     }
                 }
                 if (newslistBsons.Count != 0)

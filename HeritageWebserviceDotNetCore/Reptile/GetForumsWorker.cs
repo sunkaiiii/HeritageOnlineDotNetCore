@@ -41,6 +41,12 @@ namespace HeritageWebserviceDotNetCore.Reptile
                         block.Post(link);
                         result.Add(bson);
                     }
+                    //每10条进行一次数据库插入，减少内存负担
+                    if (result.Count == 10)
+                    {
+                        MongodbSaver.SaveNewsList(result);
+                        result.Clear();
+                    }
                 }
                 if (result.Count > 0)
                 {

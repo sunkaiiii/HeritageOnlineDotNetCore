@@ -42,7 +42,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
         public static string GetRequest(string url)
         {
 #if DEBUG
-            if(File.Exists(WebpageHelper.GetSubUrl(url)))
+            if(WebPageSaver.CheckCacheFileExist(url))
             {
                 return WebPageSaver.GetSimpleRequestResult(url);
             }
@@ -60,7 +60,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
         public static HtmlAgilityPack.HtmlDocument getHttpRequestDocument(string url)
         {
 #if DEBUG
-            if(File.Exists(WebpageHelper.GetSubUrl(url)))
+            if(WebPageSaver.CheckCacheFileExist(url))
             {
                 return WebPageSaver.GetHtmlDocument(url);
             }

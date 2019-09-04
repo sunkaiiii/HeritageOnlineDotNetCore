@@ -13,7 +13,9 @@ namespace HeritageWebserviceDotNetCore.Reptile
             var block = new BufferBlock<string>();
             var task = GetNewsDetail.GenerateSpecificTopicDetail(block);
             int errorTime = 0;
-            for(int i=1;i<20&&errorTime<10;i++)
+            string firstPage = "http://www.ihchina.cn/news_1/p/1.html";
+            var lastPageNumber = WebpageHelper.GetPageLastIndex(firstPage);
+            for (int i=1;i<lastPageNumber&&errorTime<lastPageNumber;i++)
             {
                 var listUrl = String.Format("http://www.ihchina.cn/news_1/p/{0}.html", i);
                 Console.WriteLine("starting process page:{0}", listUrl);

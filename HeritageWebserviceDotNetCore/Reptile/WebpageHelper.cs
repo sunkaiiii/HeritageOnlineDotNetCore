@@ -117,5 +117,29 @@ namespace HeritageWebserviceDotNetCore.Reptile
             Console.WriteLine(bson.ToString());
             return bson;
         }
+
+        public static int GetPageLastIndex(string pageUrl)
+        {
+            var doc = WebpageHelper.getHttpRequestDocument(pageUrl);
+            var nodes = doc.DocumentNode.SelectNodes("//div[@class='page-mod']/ul/li");
+            if (nodes == null)
+            {
+                return 100;
+            }
+            int lastIndex = 0;
+            foreach(var node in nodes)
+            {
+                string indexString = node.InnerText;
+                int tempIndex;
+                if(int.TryParse(indexString, out tempIndex))
+                {
+                    if(lastIndex<tempIndex)
+                    {
+                        lastIndex = tempIndex;
+                    }
+                }
+            }
+            return lastIndex;
+        }
     }
 }

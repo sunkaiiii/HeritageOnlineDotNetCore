@@ -39,14 +39,19 @@ namespace HeritageWebserviceDotNetCore.Reptile
         {
             return Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "cache"), WebpageHelper.GetSubUrl(url));
         }
+
+        public static string GetCacheImageName(string imageURL)
+        {
+            return Path.Combine(Directory.GetCurrentDirectory(), "img", WebpageHelper.GetSubUrl(imageURL));
+        }
+
         public static void SaveSimpleRequestResult(string url,string resultString)
         {
             if(!Directory.Exists("cache"))
             {
                 Directory.CreateDirectory("cache");
             }
-            var saveFileName = WebpageHelper.GetSubUrl(url);
-            var saveFilePath = Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "cache"), saveFileName);
+            var saveFilePath = GetCacheFileName(url);
             using (StreamWriter file=new StreamWriter(saveFilePath))
             {
                 file.Write(resultString);
@@ -73,7 +78,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     Directory.CreateDirectory("img");
                 }
                 var imageUrl = source.Receive();
-                var savePath = Path.Combine(Directory.GetCurrentDirectory(), "img", WebpageHelper.GetSubUrl(imageUrl));
+                var savePath = GetCacheImageName(imageUrl);
                 wc.DownloadFile(imageUrl, savePath);
             }
             return 1;

@@ -64,7 +64,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
         private static BsonDocument processDetailPage(string url, BufferBlock<string> imageBlock)
         {
             Console.WriteLine("starting process: " + url + "....");
-            var doc = WebpageHelper.getHttpRequestDocument(url);
+            var doc = WebpageHelper.GetHttpRequestDocument(url);
             var titleNode = doc.DocumentNode.SelectSingleNode("//div[@class='article-title']");
             if (titleNode == null)
                 return null;

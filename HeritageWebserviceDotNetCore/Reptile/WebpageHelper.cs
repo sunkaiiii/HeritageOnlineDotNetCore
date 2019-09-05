@@ -57,7 +57,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
             return result;
         }
 
-        public static HtmlAgilityPack.HtmlDocument getHttpRequestDocument(string url)
+        public static HtmlAgilityPack.HtmlDocument GetHttpRequestDocument(string url)
         {
 #if DEBUG
             if(WebPageSaver.CheckCacheFileExist(url))
@@ -120,7 +120,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
 
         public static int GetPageLastIndex(string pageUrl)
         {
-            var doc = WebpageHelper.getHttpRequestDocument(pageUrl);
+            var doc = WebpageHelper.GetHttpRequestDocument(pageUrl);
             var nodes = doc.DocumentNode.SelectNodes("//div[@class='page-mod']/ul/li");
             if (nodes == null)
             {

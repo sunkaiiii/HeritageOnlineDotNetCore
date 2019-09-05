@@ -19,7 +19,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
             {
                 var listUrl = String.Format("http://www.ihchina.cn/news_1/p/{0}.html", i);
                 Console.WriteLine("starting process page:{0}", listUrl);
-                var doc = WebpageHelper.getHttpRequestDocument(listUrl);
+                var doc = WebpageHelper.GetHttpRequestDocument(listUrl);
                 var listNodes = doc.DocumentNode.SelectNodes("//div[@class='list-mod3']/div[@class='list-item']");
                 if (listNodes == null)
                 {

@@ -26,10 +26,23 @@ namespace HeritageWebserviceDotNetCore.Reptile
             return urlBuilder.ToString();
         }
 
+        public static string CorrectRequestString(string url)
+        {
+            if (!url.StartsWith(GetIhChina.MAIN_PAGE)) //当连接不是以MAIN_PAGE开头的时候，为期添加HOST_NAME
+            {
+                if (!url.StartsWith(@"/")) //有些时候，解析的link会添加奇怪的字符，剪裁到第一个链接出现
+                {
+                    url = url.Substring(url.IndexOf(@"/"));
+                }
+                url = GetIhChina.MAIN_PAGE + url;
+            }
+            return url;
+        }
+
         public static string GetRequest(string url)
         {
 #if DEBUG
-            if(File.Exists(WebpageHelper.GetSubUrl(url)))
+            if(WebPageSaver.CheckCacheFileExist(url))
             {
                 return WebPageSaver.GetSimpleRequestResult(url);
             }
@@ -44,15 +57,25 @@ namespace HeritageWebserviceDotNetCore.Reptile
             return result;
         }
 
-        public static HtmlAgilityPack.HtmlDocument getHttpRequestDocument(string url)
+        public static HtmlAgilityPack.HtmlDocument GetHttpRequestDocument(string url)
         {
 #if DEBUG
-            if(File.Exists(WebpageHelper.GetSubUrl(url)))
+            if(WebPageSaver.CheckCacheFileExist(url))
             {
                 return WebPageSaver.GetHtmlDocument(url);
             }
 #endif
-            var doc = htmlWeb.Load(url);
+            url = CorrectRequestString(url);
+            HtmlDocument doc;
+            try
+            {
+                 doc = htmlWeb.Load(url); 
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                return new HtmlDocument();
+            }
 #if DEBUG
             WebPageSaver.SaveHtml(url, doc);
 #endif
@@ -93,6 +116,30 @@ namespace HeritageWebserviceDotNetCore.Reptile
             }
             Console.WriteLine(bson.ToString());
             return bson;
+        }
+
+        public static int GetPageLastIndex(string pageUrl)
+        {
+            var doc = WebpageHelper.GetHttpRequestDocument(pageUrl);
+            var nodes = doc.DocumentNode.SelectNodes("//div[@class='page-mod']/ul/li");
+            if (nodes == null)
+            {
+                return 100;
+            }
+            int lastIndex = 0;
+            foreach(var node in nodes)
+            {
+                string indexString = node.InnerText;
+                int tempIndex;
+                if(int.TryParse(indexString, out tempIndex))
+                {
+                    if(lastIndex<tempIndex)
+                    {
+                        lastIndex = tempIndex;
+                    }
+                }
+            }
+            return lastIndex;
         }
     }
 }

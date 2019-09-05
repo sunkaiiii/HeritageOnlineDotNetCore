@@ -11,7 +11,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
     { 
         public static void SaveHtml(string url, HtmlAgilityPack.HtmlDocument doc)
         {
-            var saveFileName = WebpageHelper.GetSubUrl(url);
+            var saveFileName = Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "cache"), WebpageHelper.GetSubUrl(url));
             using (StreamWriter file = new StreamWriter(saveFileName))
             {
                 doc.Save(file);
@@ -20,7 +20,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
 
         public static HtmlAgilityPack.HtmlDocument GetHtmlDocument(string url)
         {
-            var saveFileName = WebpageHelper.GetSubUrl(url);
+            var saveFileName = WebPageSaver.GetCacheFileName(url);
             using(StreamReader fileStreamReader=new StreamReader(saveFileName))
             {
                 var response = fileStreamReader.ReadToEnd();
@@ -30,10 +30,29 @@ namespace HeritageWebserviceDotNetCore.Reptile
             }
         }
 
+        public static bool CheckCacheFileExist(string url)
+        {
+            return File.Exists(Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "cache"), WebpageHelper.GetSubUrl(url)));
+        }
+
+        public static string GetCacheFileName(string url)
+        {
+            return Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "cache"), WebpageHelper.GetSubUrl(url));
+        }
+
+        public static string GetCacheImageName(string imageURL)
+        {
+            return Path.Combine(Directory.GetCurrentDirectory(), "img", WebpageHelper.GetSubUrl(imageURL));
+        }
+
         public static void SaveSimpleRequestResult(string url,string resultString)
         {
-            var saveFileName = WebpageHelper.GetSubUrl(url);
-            using (StreamWriter file=new StreamWriter(saveFileName))
+            if(!Directory.Exists("cache"))
+            {
+                Directory.CreateDirectory("cache");
+            }
+            var saveFilePath = GetCacheFileName(url);
+            using (StreamWriter file=new StreamWriter(saveFilePath))
             {
                 file.Write(resultString);
             }
@@ -42,7 +61,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
         public static string GetSimpleRequestResult(string url)
         {
             string result;
-            using (StreamReader file = new StreamReader(WebpageHelper.GetSubUrl(url)))
+            using (StreamReader file = new StreamReader(Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "cache"), WebpageHelper.GetSubUrl(url))))
             {
                 result = file.ReadToEnd();
             }
@@ -59,7 +78,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     Directory.CreateDirectory("img");
                 }
                 var imageUrl = source.Receive();
-                var savePath = Path.Combine(Directory.GetCurrentDirectory(), "img", WebpageHelper.GetSubUrl(imageUrl));
+                var savePath = GetCacheImageName(imageUrl);
                 wc.DownloadFile(imageUrl, savePath);
             }
             return 1;

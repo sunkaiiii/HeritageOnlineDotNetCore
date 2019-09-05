@@ -12,25 +12,39 @@ namespace HeritageWebserviceDotNetCore.Reptile
         {
             var block = new BufferBlock<string>();
             var task = GetNewsDetail.GenerateSpecificTopicDetail(block);
-            for(int i=1;i<255;i++)
+            int errorTime = 0;
+            string firstPage = "http://www.ihchina.cn/news_1/p/1.html";
+            var lastPageNumber = WebpageHelper.GetPageLastIndex(firstPage);
+            for (int i = 1; i < lastPageNumber && errorTime < 10; i++)
             {
                 var listUrl = String.Format("http://www.ihchina.cn/news_1/p/{0}.html", i);
                 Console.WriteLine("starting process page:{0}", listUrl);
-                var doc = WebpageHelper.getHttpRequestDocument(listUrl);
+                var doc = WebpageHelper.GetHttpRequestDocument(listUrl);
                 var listNodes = doc.DocumentNode.SelectNodes("//div[@class='list-mod3']/div[@class='list-item']");
-                if(listNodes==null)
+                if (listNodes == null)
                 {
                     continue;
                 }
                 List<BsonDocument> result = new List<BsonDocument>();
-                foreach(var node in listNodes)
+                foreach (var node in listNodes)
                 {
-                    var bson = WebpageHelper.AnalizeGeneralListInformation(node, (url)=>false);
+                    var bson = WebpageHelper.AnalizeGeneralListInformation(node, MongodbChecker.CheckSpecialListNewsListExist);
+                    if (bson == null)
+                    {
+                        errorTime++;
+                        Console.WriteLine("duplicated url: page {0}", i);
+                    }
                     if (bson != null)
                     {
                         var link = bson.GetValue("link").ToString();
-                        block.Post(GetIhChina.MAIN_PAGE + link);
+                        block.Post(link);
                         result.Add(bson);
+                    }
+                    //每10条进行一次数据库插入，减少内存负担
+                    if (result.Count == 10)
+                    {
+                        MongodbSaver.SaveNewsList(result);
+                        result.Clear();
                     }
                 }
                 if (result.Count > 0)

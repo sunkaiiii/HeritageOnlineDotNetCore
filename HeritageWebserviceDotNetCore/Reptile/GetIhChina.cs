@@ -36,13 +36,13 @@ namespace HeritageWebserviceDotNetCore.Reptile
         private static void getMainPageList()
         {
             var doc = new HtmlDocument();
-#if DEBUG
-            doc.Load(@".\mainPageHtml.html");
-#else
-            var url = mainPage;
+//#if DEBUG
+           // doc.Load(@".\mainPageHtml.html");
+//#else
+            var url = MAIN_PAGE;
             var web = new HtmlWeb();
             doc = web.Load(url);
-#endif
+//#endif
             IEnumerable<BsonDocument> nodes = from links in doc.DocumentNode.Descendants()
                                               where links.Name == "a" && links.Attributes["href"] != null && links.InnerText.Trim().Length > 0 && links.Attributes["href"].Value.Contains("news_details")
                                               select new BsonDocument().Add("url", links.Attributes["href"].Value).Add("text", links.InnerText).Add("date", links.ParentNode.ParentNode.FirstChild.InnerText);

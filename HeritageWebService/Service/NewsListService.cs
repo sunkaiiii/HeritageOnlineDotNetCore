@@ -12,11 +12,11 @@ namespace HeritageWebServiceDotNetCore.Service
     {
         private readonly IMongoCollection<NewsList> _newsList;
 
-        public NewsListService(IHeritageNewsListSettings settings)
+        public NewsListService(IHeritageMongodbSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
-            _newsList = database.GetCollection<NewsList>(settings.NewsListCollectionName);
+            _newsList = database.GetCollection<NewsList>(settings.Collections.NewsListCollectionName);
         }
 
         public List<NewsList> Get() => _newsList.Find(newsList => true).Limit(20).ToList();

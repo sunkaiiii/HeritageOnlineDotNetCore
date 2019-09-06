@@ -1,4 +1,5 @@
 ﻿using HeritageWebService.Model;
+using HeritageWebServiceDotNetCore.Model;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,11 @@ namespace HeritageWebService.Service
         private readonly IMongoCollection<MainNewsList> _mainLists;
 
         //通过构造函数传入的DI检索IHeritageMainPageListSettings的实例，用于访问配置在appsetting.json的值
-        public HeritageService(IHeritageMainPageListSettings settings)
+        public HeritageService(IHeritageMongodbSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
-            _mainLists = database.GetCollection<MainNewsList>(settings.MainPageCollectionName);
+            _mainLists = database.GetCollection<MainNewsList>(settings.Collections.MainPageCollectionName);
         }
 
         public List<MainNewsList> Get() => _mainLists.Find(newsList => true).ToList();

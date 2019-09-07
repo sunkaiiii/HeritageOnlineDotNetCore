@@ -30,5 +30,10 @@ namespace HeritageWebserviceDotNetCore.Mongodb
         {
             return Delete(filter, MongodbMain.FORUMS_LIST);
         }
+
+        public static bool DeleteHeritageProject(BsonDocument filter)
+        {
+            return Delete(filter, MongodbMain.HERITAGE_PROJECT);
+        }
     }
 }

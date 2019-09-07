@@ -1,15 +1,55 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using HeritageWebserviceDotNetCore.Mongodb;
 using HeritageWebserviceDotNetCore.Reptile;
 using HeritageWebserviceReptileDotNetCore.Mongodb;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using Newtonsoft.Json;
 
 namespace HeritageWebserviceReptileDotNetCore.Reptile
 {
     public static class GetHeritageProjects
     {
         private static readonly string PROJECT_MAIN_PAGE = "http://www.ihchina.cn/project.html";
+        private static readonly string REQUEST_URL = "http://www.ihchina.cn/Article/Index/getProject.html?province=&rx_time=&type=&cate=&keywords=&category_id=16&limit=10&p={0}";
+
+        struct HeritageProjectRequest
+        {
+            public int More { get; set; }
+            public PageInfo Pages { get; set; }
+            public HeritageProject[] List { get; set; }
+
+        }
+
+        struct PageInfo
+        {
+            public int Total_pages { get; set; }
+            public int Current { get; set; }
+        }
+
+        struct HeritageProject
+        {
+            public string Id { get; set; }
+            public string Auto_id { get; set; } //项目序号
+            public string Num { get; set; } //编号
+            public string Title { get; set; } //名称
+            public string Type { get; set; } //类别
+            public string Reg_type { get; set; }
+            public string Rx_time { get; set; } //公布时间
+            public string Project_num { get; set; }
+            public string Cate { get; set; } //类型
+            public string Province { get; set; } //申报地区或单位
+            public string City { get; set; }
+            public string Content { get; set; }
+            public string Playtype { get; set; }
+            public string Unit { get; set; }
+            public string Link { get; set; }
+        
+        }
 
         public static void GetHeritageProject()
         {
@@ -76,9 +116,74 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                 else
                 {
                     Console.WriteLine("Not Insert Heritage Project Content");
-                    return;
                 }
-                Console.WriteLine(bson.ToString());
+                Console.WriteLine(bson);
+                GetAllProjectList();
+            }
+        }
+
+        private static void GetAllProjectList()
+        {
+            short errorTime = 0;
+            var totalPages = 10;
+            for(int i=1;i<2;i++)
+            {
+                if(errorTime>10)
+                {
+                    Console.WriteLine("GetAllProjectList: reach the limitation of error time");
+                    break;
+                }
+                var currentPage = String.Format(REQUEST_URL, i);
+                Console.WriteLine("Starting process: "+currentPage);
+                var requestResult = WebpageHelper.GetRequest(currentPage);
+                var jsonObject = JsonConvert.DeserializeObject<HeritageProjectRequest>(requestResult);
+                if(jsonObject.Pages.Total_pages!=totalPages)
+                {
+                    totalPages = jsonObject.Pages.Total_pages;
+                }
+                var list = jsonObject.List;
+                if(list==null || list.Length==0)
+                {
+                    continue;
+                }
+
+
+                var bsonArray = new List<BsonDocument>();
+                var heritageType = typeof(HeritageProject);
+                var properties = typeof(HeritageProject).GetProperties();
+                for (int j=0;j<list.Length;j++)
+                {
+                    var bsonDocument= new BsonDocument();
+                    list[j].Link= "/project_details/" + list[j].Id;
+                    foreach(var property in properties)
+                    {
+                        //反射获取HeritageProject所有属性
+                        //以属性名作为MongoDB存储的Key值
+                        //反射获取对应List当中的值
+                        bsonDocument.Add(property.Name.ToLower(), Regex.Replace(heritageType.GetProperty(property.Name).GetValue(list[j]).ToString(),"<.*?>",string.Empty));
+                    }
+
+                    if(MongodbChecker.CheckHeritageProjectExist(list[j].Link))
+                    {
+                        Console.WriteLine("Duplicated Heritage Project Link: {0}", list[j].Link);
+                        errorTime++;
+                        continue;
+                    }
+
+                    bsonArray.Add(bsonDocument);
+                }
+
+                
+                if(bsonArray.Count!=0)
+                {
+                    MongodbSaver.SaveHeritageProjectNewsList(bsonArray);
+                }
+                
+                if (jsonObject.More!=1)
+                {
+                    Console.WriteLine("GetAllProjectList: current page is {0}, more equals 0", i);
+                    break;
+                }
             }
         }
 

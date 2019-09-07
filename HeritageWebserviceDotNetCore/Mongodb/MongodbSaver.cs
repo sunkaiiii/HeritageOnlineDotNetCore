@@ -65,5 +65,10 @@ namespace HeritageWebserviceDotNetCore.Mongodb
         {
             InsertOne(bson, MongodbMain.HERITAGE_PROJECT_MAIN_PAGE);
         }
+
+        public static void SaveHeritageProjectNewsList(IEnumerable<BsonDocument> bsons)
+        {
+            InsertMany(bsons, MongodbMain.HERITAGE_PROJECT);
+        }
     }
 }

@@ -7,52 +7,51 @@ namespace HeritageWebserviceDotNetCore.Mongodb
 {
     public class MongodbChecker
     {
-        private static bool checkLink(MongoDB.Driver.IMongoCollection<BsonDocument> collection,string url)
+        private static bool checkLink(string collectionName,string url)
         {
             var bson = new BsonDocument();
+            var collection = MongodbMain.GetCollection(collectionName);
             bson.Add("link", url);
             return collection.CountDocuments(bson) > 0;
         }
 
         public static bool CheckMainNewsList(string newsUrl)
         {
-            var collection = MongodbMain.GetCollection(MongodbMain.MAIN_PAGE);
-            return checkLink(collection, newsUrl);
+            return checkLink(MongodbMain.MAIN_PAGE, newsUrl);
         }
 
         public static bool CheckNewsExist(string newsUrl)
         {
-            var collection = MongodbMain.GetCollection(MongodbMain.NEWS_LIST);
-            return checkLink(collection, newsUrl);
+            return checkLink(MongodbMain.NEWS_LIST, newsUrl);
         }
 
         public static bool CheckNewsDetailExist(string newsUrl)
         {
-            var collection = MongodbMain.GetCollection(MongodbMain.NEWS_DETAIL);
-            return checkLink(collection, newsUrl);
+            return checkLink(MongodbMain.NEWS_DETAIL, newsUrl);
         }
 
         public static bool CheckForumsListExist(string forumsUrl)
         {
-            var collection = MongodbMain.GetCollection(MongodbMain.FORUMS_LIST);
-            return checkLink(collection, forumsUrl);
+            return checkLink(MongodbMain.FORUMS_LIST, forumsUrl);
         }
 
         public static bool CheckForumsDetailExist(string detailUrl)
         {
-            var collection = MongodbMain.GetCollection(MongodbMain.FORUMS_DETAIL);
-            return checkLink(collection, detailUrl);
+            return checkLink(MongodbMain.FORUMS_DETAIL, detailUrl);
         }
 
         public static bool CheckSpecialListNewsListExist(string newsList)
         {
-            var collection = MongodbMain.GetCollection(MongodbMain.SPECIFIC_TOPIC);
-            return checkLink(collection, newsList);
+            return checkLink(MongodbMain.SPECIFIC_TOPIC, newsList);
         }
         public static bool CheckSpecialListNewsDetailExist(string detailUrl)
         {
-            var collection = MongodbMain.GetCollection(MongodbMain.SPECIFIC_TOPIC_DETAIL);
-            return checkLink(collection, detailUrl);
+            return checkLink(MongodbMain.SPECIFIC_TOPIC_DETAIL, detailUrl);
+        }
+
+        public static bool CheckHeritageProjectExist(string detailUrl)
+        {
+            return checkLink(MongodbMain.HERITAGE_PROJECT, detailUrl);
         }
     }
 }

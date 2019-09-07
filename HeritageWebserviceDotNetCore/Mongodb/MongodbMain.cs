@@ -18,6 +18,7 @@ namespace HeritageWebserviceDotNetCore.Mongodb
         internal static readonly string SPECIFIC_TOPIC = "specific_topic";
         internal static readonly string SPECIFIC_TOPIC_DETAIL = "specific_topic_detail";
         internal static readonly string HERITAGE_PROJECT_MAIN_PAGE = "heritage_project_main_page";
+        internal static readonly string HERITAGE_PROJECT = "heritage_project";
 
         internal Dictionary<string, MongoDB.Driver.IMongoCollection<BsonDocument>> COLLECTIONS;
         private readonly MongoClient client;
@@ -35,7 +36,8 @@ namespace HeritageWebserviceDotNetCore.Mongodb
                 FORUMS_DETAIL,
                 SPECIFIC_TOPIC,
                 SPECIFIC_TOPIC_DETAIL,
-                HERITAGE_PROJECT_MAIN_PAGE
+                HERITAGE_PROJECT_MAIN_PAGE,
+                HERITAGE_PROJECT
             };
             COLLECTIONS = new Dictionary<string, IMongoCollection<BsonDocument>>();
             foreach (var collectionName in collectionString)

@@ -13,38 +13,45 @@ namespace HeritageWebserviceDotNetCore.Mongodb
             bson.Add("link", url);
             return collection.CountDocuments(bson) > 0;
         }
+
+        public static bool CheckMainNewsList(string newsUrl)
+        {
+            var collection = MongodbMain.GetCollection(MongodbMain.MAIN_PAGE);
+            return checkLink(collection, newsUrl);
+        }
+
         public static bool CheckNewsExist(string newsUrl)
         {
-            var collection = MongodbMain.Instance.Database.GetCollection<BsonDocument>(MongodbMain.NEWS_LIST);
+            var collection = MongodbMain.GetCollection(MongodbMain.NEWS_LIST);
             return checkLink(collection, newsUrl);
         }
 
         public static bool CheckNewsDetailExist(string newsUrl)
         {
-            var collection = MongodbMain.Instance.Database.GetCollection<BsonDocument>(MongodbMain.NEWS_DETAIL);
+            var collection = MongodbMain.GetCollection(MongodbMain.NEWS_DETAIL);
             return checkLink(collection, newsUrl);
         }
 
         public static bool CheckForumsListExist(string forumsUrl)
         {
-            var collection = MongodbMain.Instance.Database.GetCollection<BsonDocument>(MongodbMain.FORUMS_LIST);
+            var collection = MongodbMain.GetCollection(MongodbMain.FORUMS_LIST);
             return checkLink(collection, forumsUrl);
         }
 
         public static bool CheckForumsDetailExist(string detailUrl)
         {
-            var collection = MongodbMain.Instance.Database.GetCollection<BsonDocument>(MongodbMain.FORUMS_DETAIL);
+            var collection = MongodbMain.GetCollection(MongodbMain.FORUMS_DETAIL);
             return checkLink(collection, detailUrl);
         }
 
         public static bool CheckSpecialListNewsListExist(string newsList)
         {
-            var collection = MongodbMain.Instance.Database.GetCollection<BsonDocument>(MongodbMain.SPECIFIC_TOPIC);
+            var collection = MongodbMain.GetCollection(MongodbMain.SPECIFIC_TOPIC);
             return checkLink(collection, newsList);
         }
         public static bool CheckSpecialListNewsDetailExist(string detailUrl)
         {
-            var collection = MongodbMain.Instance.Database.GetCollection<BsonDocument>(MongodbMain.SPECIFIC_TOPIC_DETAIL);
+            var collection = MongodbMain.GetCollection(MongodbMain.SPECIFIC_TOPIC_DETAIL);
             return checkLink(collection, detailUrl);
         }
     }

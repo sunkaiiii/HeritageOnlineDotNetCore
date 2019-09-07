@@ -9,7 +9,7 @@ namespace HeritageWebserviceDotNetCore.Mongodb
     {
         private static void InsertMany(IEnumerable<BsonDocument> bsons, string collectionName)
         {
-            var collection = MongodbMain.Instance.Database.GetCollection<BsonDocument>(collectionName);
+            var collection = MongodbMain.GetCollection(collectionName);
             collection.InsertMany(bsons);
         }
 
@@ -17,13 +17,18 @@ namespace HeritageWebserviceDotNetCore.Mongodb
         {
             if (bson == null || bson.ElementCount == 0)
                 return;
-            var collection = MongodbMain.Instance.Database.GetCollection<BsonDocument>(collectionName);
+            var collection = MongodbMain.GetCollection(collectionName);
             collection.InsertOne(bson);
         }
 
         public static void SaveMainpageNewsList(IEnumerable<BsonDocument> bsons)
         {
             InsertMany(bsons, MongodbMain.MAIN_PAGE);
+        }
+
+        public static void SaveMainPageNewsList(BsonDocument bson)
+        {
+            InsertOne(bson, MongodbMain.MAIN_PAGE);
         }
 
         public static void SaveNewsList(IEnumerable<BsonDocument> bsons)
@@ -53,6 +58,12 @@ namespace HeritageWebserviceDotNetCore.Mongodb
         public static void SaveSpecificTopicDetail(BsonDocument bson)
         {
             InsertOne(bson, MongodbMain.SPECIFIC_TOPIC_DETAIL);
+        }
+
+
+        public static void SaveHeritageProjectMainContent(BsonDocument bson)
+        {
+            InsertOne(bson, MongodbMain.HERITAGE_PROJECT_MAIN_PAGE);
         }
     }
 }

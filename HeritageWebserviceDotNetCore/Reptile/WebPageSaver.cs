@@ -11,7 +11,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
     { 
         public static void SaveHtml(string url, HtmlAgilityPack.HtmlDocument doc)
         {
-            var saveFileName = Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "cache"), WebpageHelper.GetSubUrl(url));
+            var saveFileName = GetCacheFileName(url);
             using (StreamWriter file = new StreamWriter(saveFileName))
             {
                 doc.Save(file);
@@ -37,6 +37,11 @@ namespace HeritageWebserviceDotNetCore.Reptile
 
         public static string GetCacheFileName(string url)
         {
+            if(!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "cache")))
+            {
+                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "cache"));
+            }
+
             return Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "cache"), WebpageHelper.GetSubUrl(url));
         }
 
@@ -83,5 +88,6 @@ namespace HeritageWebserviceDotNetCore.Reptile
             }
             return 1;
         }
+
     }
 }

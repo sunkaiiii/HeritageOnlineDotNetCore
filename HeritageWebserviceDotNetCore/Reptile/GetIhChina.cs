@@ -44,14 +44,27 @@ namespace HeritageWebserviceDotNetCore.Reptile
             doc = web.Load(url);
 //#endif
             IEnumerable<BsonDocument> nodes = from links in doc.DocumentNode.Descendants()
-                                              where links.Name == "a" && links.Attributes["href"] != null && links.InnerText.Trim().Length > 0 && links.Attributes["href"].Value.Contains("news_details")
-                                              select new BsonDocument().Add("url", links.Attributes["href"].Value).Add("text", links.InnerText).Add("date", links.ParentNode.ParentNode.FirstChild.InnerText);
+                                              where
+                                              links.Name == "a"
+                                              && links.Attributes["href"] != null
+                                              && links.InnerText.Trim().Length > 0
+                                              && links.Attributes["href"].Value.Contains("news_details")
+                                              && !MongodbChecker.CheckMainNewsList(links.Attributes["href"].Value)
+                                              select new BsonDocument()
+                                              .Add("link", links.Attributes["href"].Value)
+                                              .Add("text", links.InnerText)
+                                              .Add("date", links.ParentNode.ParentNode.FirstChild.InnerText);
             //TODO 第一新闻有图片页，且格式不同，需要适配
-            MongodbSaver.SaveMainpageNewsList(nodes);
-            foreach (var node in nodes)
+            if (nodes != null)
             {
-                Console.WriteLine(node["url"].AsBsonValue + " " + node["text"].AsBsonValue + " " + node["date"].AsBsonValue);
+                MongodbSaver.SaveMainpageNewsList(nodes);
+                foreach (var node in nodes)
+                {
+                    Console.WriteLine(node["url"].AsBsonValue + " " + node["text"].AsBsonValue + " " + node["date"].AsBsonValue);
+                }
             }
+
+
         }
     }
 }

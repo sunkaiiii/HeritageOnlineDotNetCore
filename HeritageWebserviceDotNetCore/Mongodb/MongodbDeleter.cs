@@ -14,7 +14,7 @@ namespace HeritageWebserviceDotNetCore.Mongodb
             {
                 return false;
             }
-            return MongodbMain.Instance.Database.GetCollection<BsonDocument>(collectionName).FindOneAndDelete<BsonDocument>(bson) != null;
+            return MongodbMain.GetCollection(collectionName).FindOneAndDelete<BsonDocument>(bson) != null;
         }
         public static bool DeleteNews(BsonDocument filter)
         {

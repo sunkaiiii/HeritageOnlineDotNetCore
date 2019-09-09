@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks.Dataflow;
 using HeritageWebserviceDotNetCore.Mongodb;
 using HeritageWebserviceDotNetCore.Reptile;
 using HeritageWebserviceReptileDotNetCore.Mongodb;
@@ -126,7 +127,9 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
         {
             short errorTime = 0;
             var totalPages = 10;
-            for(int i=1;i<2;i++)
+            var block = new BufferBlock<string>();
+            var task = GetHeritageProjectDetailWorker.GenerateProjectDetailPage(block);
+            for (int i=1;i<totalPages;i++)
             {
                 if(errorTime>10)
                 {
@@ -169,7 +172,7 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                         errorTime++;
                         continue;
                     }
-
+                    block.Post(list[j].Link);
                     bsonArray.Add(bsonDocument);
                 }
 
@@ -185,6 +188,8 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                     break;
                 }
             }
+            block.Complete();
+            task.Wait();
         }
 
         private static bool CheckBsonIsEqual(BsonDocument bson, BsonDocument mongodbBson)

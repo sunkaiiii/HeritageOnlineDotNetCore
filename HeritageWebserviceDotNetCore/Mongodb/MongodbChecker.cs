@@ -49,9 +49,14 @@ namespace HeritageWebserviceDotNetCore.Mongodb
             return checkLink(MongodbMain.SPECIFIC_TOPIC_DETAIL, detailUrl);
         }
 
-        public static bool CheckHeritageProjectExist(string detailUrl)
+        public static bool CheckHeritageProjectExist(string url)
         {
-            return checkLink(MongodbMain.HERITAGE_PROJECT, detailUrl);
+            return checkLink(MongodbMain.HERITAGE_PROJECT, url);
+        }
+
+        public static bool CheckHeritageProjectDetailExist(string detailUrl)
+        {
+            return checkLink(MongodbMain.HERITAGE_PROJECT_DETAIL, detailUrl);
         }
     }
 }

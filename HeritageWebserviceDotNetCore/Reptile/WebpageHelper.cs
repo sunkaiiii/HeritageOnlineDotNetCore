@@ -49,8 +49,16 @@ namespace HeritageWebserviceDotNetCore.Reptile
 #endif
             var request = WebRequest.Create(url);
             request.Method = "GET";
-            var responseStream = request.GetResponse().GetResponseStream();
-            var result = new StreamReader(responseStream).ReadToEnd().ToString();
+            var result = "";
+            try
+            {
+                var responseStream = request.GetResponse().GetResponseStream();
+                result = new StreamReader(responseStream).ReadToEnd().ToString();
+            }catch(Exception e)
+            {
+                Console.WriteLine(e);
+                return result;
+            }
 #if DEBUG
             WebPageSaver.SaveSimpleRequestResult(url,result);
 #endif

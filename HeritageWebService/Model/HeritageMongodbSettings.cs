@@ -17,6 +17,9 @@ namespace HeritageWebServiceDotNetCore.Model
         public string MainPageCollectionName { get; set; }
         public string NewsDetailCollectionName { get; set; }
         public string NewsListCollectionName { get; set; }
+        public string HeritageProjectName { get; set; }
+        public string HeritageProjectMainPageName { get; set; }
+        public string HeritageProjectDetilName { get; set; }
     }
     public interface IHeritageMongodbSettings
     {

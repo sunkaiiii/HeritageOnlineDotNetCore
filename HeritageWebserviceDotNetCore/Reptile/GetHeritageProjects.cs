@@ -49,7 +49,6 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
             public string Playtype { get; set; }
             public string Unit { get; set; }
             public string Link { get; set; }
-        
         }
 
         public static void GetHeritageProject()

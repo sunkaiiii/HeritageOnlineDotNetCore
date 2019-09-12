@@ -110,6 +110,8 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                                 {
                                     continue;
                                 }
+                                //抽出每一行的数据
+                                var columnBsonDocument = new BsonDocument();
                                 var columnArray = new BsonArray();
                                 foreach (var column in colums)
                                 {
@@ -117,9 +119,15 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                                     var name = column.SelectSingleNode(".//div").InnerText;
                                     columnBson.Add("key", name);
                                     columnBson.Add("value", column.InnerText.Replace(name, string.Empty));
+                                    var link = column.SelectSingleNode(".//a"); //找到哪一行出现了对应项目的链接
+                                    if(link!=null)
+                                    {
+                                        columnBsonDocument.Add("link", link.Attributes["href"].Value);
+                                    }
                                     columnArray.Add(columnBson);
                                 }
-                                rowArray.Add(columnArray);
+                                columnBsonDocument.Add("content", columnArray);
+                                rowArray.Add(columnBsonDocument);
                             }
                             if (rowArray != null)
                             {

@@ -55,6 +55,11 @@ namespace HeritageWebserviceDotNetCore.Mongodb
             InsertMany(bsons, MongodbMain.SPECIFIC_TOPIC);
         }
 
+        internal static void SaveHeritageProjectInheritatePeople(BsonDocument bson)
+        {
+            InsertOne(bson, MongodbMain.HEIRTAGE_INHERITATE_PEOPLE);
+        }
+
         public static void SaveSpecificTopicDetail(BsonDocument bson)
         {
             InsertOne(bson, MongodbMain.SPECIFIC_TOPIC_DETAIL);

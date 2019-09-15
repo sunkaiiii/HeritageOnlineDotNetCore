@@ -49,6 +49,11 @@ namespace HeritageWebserviceDotNetCore.Mongodb
             return checkLink(MongodbMain.SPECIFIC_TOPIC_DETAIL, detailUrl);
         }
 
+        internal static bool CheckHeritageProjectInheritatePeopleExist(string url)
+        {
+            return checkLink(MongodbMain.HEIRTAGE_INHERITATE_PEOPLE,url);
+        }
+
         public static bool CheckHeritageProjectExist(string url)
         {
             return checkLink(MongodbMain.HERITAGE_PROJECT, url);

@@ -21,7 +21,7 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
         struct HeritageProjectRequest
         {
             public int More { get; set; }
-            public PageInfo Pages { get; set; }
+            public PageInfo Links { get; set; }
             public HeritageProject[] List { get; set; }
 
         }
@@ -138,18 +138,21 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                 var currentPage = String.Format(REQUEST_URL, i);
                 Console.WriteLine("Starting process: "+currentPage);
                 var requestResult = WebpageHelper.GetRequest(currentPage);
-                var jsonObject = JsonConvert.DeserializeObject<HeritageProjectRequest>(requestResult);
-                if(jsonObject.Pages.Total_pages!=totalPages)
+                if(string.IsNullOrEmpty(requestResult))
                 {
-                    totalPages = jsonObject.Pages.Total_pages;
+                    errorTime++;
+                    continue;
+                }
+                var jsonObject = JsonConvert.DeserializeObject<HeritageProjectRequest>(requestResult);
+                if(jsonObject.Links.Total_pages!=totalPages)
+                {
+                    totalPages = jsonObject.Links.Total_pages;
                 }
                 var list = jsonObject.List;
                 if(list==null || list.Length==0)
                 {
                     continue;
                 }
-
-
                 var bsonArray = new List<BsonDocument>();
                 var heritageType = typeof(HeritageProject);
                 var properties = typeof(HeritageProject).GetProperties();

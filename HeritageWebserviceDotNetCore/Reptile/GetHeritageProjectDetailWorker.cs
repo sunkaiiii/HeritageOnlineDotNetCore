@@ -13,7 +13,6 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
     {
         public readonly static int DUPLICATED_NEWS = 1;
         public readonly static int PROCESS_SUCCESS = 0;
-        private static BsonDocument bsonDocument = new BsonDocument();
         public static async Task<int> GenerateProjectDetailPage(ISourceBlock<string> urlSource)
         {
             var errTime = 0;
@@ -29,7 +28,7 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                     errTime++;
                     continue;
                 }
-                var bson = GenerateHeritageProjectDetailPage(url);
+                var bson = GenerateHeritageProjectDetailPage(url,true);
                 if(bson != null)
                 {
                     MongodbSaver.SaveHeritageProjectDetail(bson);
@@ -38,7 +37,21 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
             return PROCESS_SUCCESS;
         }
 
-        private static BsonDocument GenerateHeritageProjectDetailPage(string url)
+        //传承人和非遗用的同一个页面结构，所以可以复用
+        public static void GenerateCCRDetail(string url)
+        {
+            if(MongodbChecker.CheckHeritageProjectInheritatePeopleExist(url))
+            {
+                return;
+            }
+            var bson = GenerateHeritageProjectDetailPage(url,false);
+            if(bson!=null)
+            {
+                MongodbSaver.SaveHeritageProjectInheritatePeople(bson);
+            }
+        }
+
+        private static BsonDocument GenerateHeritageProjectDetailPage(string url,bool continueReptile)
         {
             var doc = WebpageHelper.GetHttpRequestDocument(url);
             var containerNode = doc.DocumentNode.SelectSingleNode("//div[@class='x-container']");
@@ -53,7 +66,7 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
             {
                 return null;
             }
-            bsonDocument.Clear();
+            var bsonDocument = new BsonDocument();
             bsonDocument.Add("title", titleNode.InnerText);
             bsonDocument.Add("link", url);
             var tableNodes = containerNode.SelectSingleNode(".//div[@class='table']").SelectNodes(".//div[@class='p']");
@@ -82,12 +95,12 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
             }
 
             //底部相关传承人
-            GetBottomInheritageAndReleventInfo(containerNode, bsonDocument);
+            GetBottomInheritageAndReleventInfo(containerNode, bsonDocument, continueReptile);
             Console.WriteLine(bsonDocument);
             return bsonDocument;
         }
 
-        private static void GetBottomInheritageAndReleventInfo(HtmlAgilityPack.HtmlNode containerNode,BsonDocument bsonDocument)
+        private static void GetBottomInheritageAndReleventInfo(HtmlAgilityPack.HtmlNode containerNode,BsonDocument bsonDocument,bool continueReptile)
         {
             var inheritageNode = containerNode.SelectNodes(".//div[@class='inherit_xx2']/div/div");
             if (inheritageNode != null)
@@ -133,6 +146,17 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                             {
                                 if (node.InnerText.Trim().Contains("传承人"))
                                 {
+                                    if(continueReptile)
+                                    {
+                                        foreach (var column in rowArray)
+                                        {
+                                            var link = column.AsBsonDocument.GetValue("link");
+                                            if (link != null && link.ToString().Trim().Length > 0)
+                                            {
+                                                GenerateCCRDetail(link.ToString().Trim());
+                                            }
+                                        }
+                                    }
                                     bsonDocument.Add("inheritate", rowArray);
                                 }
                                 else

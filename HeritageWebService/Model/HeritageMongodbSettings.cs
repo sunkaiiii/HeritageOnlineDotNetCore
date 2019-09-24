@@ -20,6 +20,7 @@ namespace HeritageWebServiceDotNetCore.Model
         public string HeritageProjectName { get; set; }
         public string HeritageProjectMainPageName { get; set; }
         public string HeritageProjectDetilName { get; set; }
+        public string HeritageProjectInheritatePeople { get; set; }
     }
     public interface IHeritageMongodbSettings
     {

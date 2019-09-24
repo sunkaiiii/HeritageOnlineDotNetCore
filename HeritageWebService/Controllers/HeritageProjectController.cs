@@ -125,5 +125,18 @@ namespace HeritageWebServiceDotNetCore.Controllers
             return JsonConvert.SerializeObject(_heritageProjectService.GetAllCategories());
         }
 
+        [Route("/api/[controller]/GetInheritatePeople")]
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public ActionResult<HeritageInheritatePeople> GetInheritatePeople([FromQuery(Name ="link")]string link)
+        {
+            var people = _heritageProjectService.GetInheritatePeople(link);
+            if(people ==null)
+            {
+                return NotFound();
+            }
+            return people;
+        }
     }
 }

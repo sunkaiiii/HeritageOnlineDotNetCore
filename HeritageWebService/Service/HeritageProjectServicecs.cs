@@ -13,6 +13,7 @@ namespace HeritageWebServiceDotNetCore.Service
         private readonly IMongoCollection<HeritageProjectMainPage> _heritageProjectMainPage;
         private readonly IMongoCollection<HeritageProject> _heritageProject;
         private readonly IMongoCollection<HeritageProjectDetail> _heritageProjectDetail;
+        private readonly IMongoCollection<HeritageInheritatePeople> _heritageInheritatePeople;
 
         public HeritageProjectServicecs(IHeritageMongodbSettings settings)
         {
@@ -21,6 +22,7 @@ namespace HeritageWebServiceDotNetCore.Service
             _heritageProjectMainPage = database.GetCollection<HeritageProjectMainPage>(settings.Collections.HeritageProjectMainPageName);
             _heritageProject = database.GetCollection<HeritageProject>(settings.Collections.HeritageProjectName);
             _heritageProjectDetail = database.GetCollection<HeritageProjectDetail>(settings.Collections.HeritageProjectDetilName);
+            _heritageInheritatePeople = database.GetCollection<HeritageInheritatePeople>(settings.Collections.HeritageProjectInheritatePeople);
         }
 
         public HeritageProjectMainPage GetMainPage() => _heritageProjectMainPage.Find(n => true).FirstOrDefault();
@@ -94,6 +96,11 @@ namespace HeritageWebServiceDotNetCore.Service
                 }
             }
             return dic;
+        }
+
+        public HeritageInheritatePeople GetInheritatePeople(string link)
+        {
+            return _heritageInheritatePeople.Find(people => people.link.Equals(link)).SingleOrDefault();
         }
     }
 }

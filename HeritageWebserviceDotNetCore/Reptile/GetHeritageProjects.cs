@@ -144,7 +144,7 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                     continue;
                 }
                 var jsonObject = JsonConvert.DeserializeObject<HeritageProjectRequest>(requestResult);
-                if(jsonObject.Links.Total_pages!=totalPages)
+                if(jsonObject.Links.Total_pages!=0&&jsonObject.Links.Total_pages!=totalPages)
                 {
                     totalPages = jsonObject.Links.Total_pages;
                 }

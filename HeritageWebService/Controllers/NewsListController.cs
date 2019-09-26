@@ -45,7 +45,6 @@ namespace HeritageWebServiceDotNetCore.Controllers
         public ActionResult<List<NewsList>> Get(string pages)
         {
             var isNumric = int.TryParse(pages, out int n);
-
             if (isNumric)
             {
                 return GetList(n);

@@ -18,7 +18,6 @@ namespace HeritageWebServiceDotNetCore.Controllers
             {
                 var baseRequestString = query[typeof(BaseRequest).Name];
                 var baseSetting=JsonConvert.DeserializeObject<BaseRequest>(baseRequestString);
-                Console.WriteLine("baseSetting!!!!!!!!!!!"+baseSetting.ToString());
             }
         }
     }

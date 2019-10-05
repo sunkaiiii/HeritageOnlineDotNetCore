@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using HeritageWebserviceReptileDotNetCore.Reptile;
 
 namespace HeritageWebserviceDotNetCore.Reptile
 {
@@ -29,6 +30,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
             GetNewsListWorker.GetNewsList(imageSaverTask, imageTargetBlock).Wait(); //仅用一个线程去获取新闻内容，另外一个线程取图片
             GetForumsWorker.GetForumsList();
             GetSpecialTopicWorker.GetSpecialTopic();
+            GetHeritageProjects.GetHeritageProject();
             imageTargetBlock.Complete();
             imageSaverTask.Wait();
         }

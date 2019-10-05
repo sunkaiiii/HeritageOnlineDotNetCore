@@ -37,6 +37,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 var jsonObject = JsonConvert.DeserializeObject<NewsListResponse>(result);
                 if (jsonObject.more != 1 && String.IsNullOrEmpty(jsonObject.data))
                 {
+                    Console.WriteLine("GetNewsList: There is no more here, break from the loop");
                     break;
                 }
                 var doc = new HtmlDocument();

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using HeritageWebService.Model;
 using HeritageWebService.Service;
+using HeritageWebServiceDotNetCore.Controllers;
 using HeritageWebServiceDotNetCore.Model;
 using HeritageWebServiceDotNetCore.Service;
 using Microsoft.AspNetCore.Builder;
@@ -61,6 +62,8 @@ namespace HeritageWebService
                 c.IncludeXmlComments(xmlPath);
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            //为所有的请求添加拦截器
+            services.AddMvc(options => options.Filters.Add<BaseInformationFilter>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

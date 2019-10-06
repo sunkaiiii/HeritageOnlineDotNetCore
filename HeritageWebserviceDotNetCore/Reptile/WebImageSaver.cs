@@ -35,7 +35,19 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 {
                     imageUrl = GetIhChina.MAIN_PAGE + imageUrl;
                 }
-                wc.DownloadFile(imageUrl, savePath);
+                try
+                {
+                    wc.DownloadFile(imageUrl, savePath);
+                }catch(WebException e)
+                {
+                    Console.WriteLine("Save image error");
+                    Console.WriteLine(e);
+                }catch(Exception e)
+                {
+                    Console.WriteLine("unhandled error");
+                    Console.WriteLine(e);
+                }
+                
             }
             return 1;
         }

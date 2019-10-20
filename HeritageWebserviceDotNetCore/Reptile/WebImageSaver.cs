@@ -37,17 +37,19 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 }
                 try
                 {
+                    Console.WriteLine("Starting to save image {0}", imageUrl);
                     wc.DownloadFile(imageUrl, savePath);
-                }catch(WebException e)
+                    Console.WriteLine("Save image {0} completely", imageUrl);
+                }
+                catch(WebException e)
                 {
-                    Console.WriteLine("Save image error");
+                    Console.WriteLine("Save image {0} error",imageUrl);
                     Console.WriteLine(e);
                 }catch(Exception e)
                 {
                     Console.WriteLine("unhandled error");
                     Console.WriteLine(e);
                 }
-                
             }
             return 1;
         }

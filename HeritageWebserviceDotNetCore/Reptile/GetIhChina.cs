@@ -27,7 +27,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
             var imageTargetBlock = WebImageSaver.Instance.ImageTargetBlock;
             var imageSaverTask = WebImageSaver.Instance.SaveFileAsync(imageTargetBlock);
             getMainPageList();
-            Task<int> result = GetNewsListWorker.GetNewsList(imageSaverTask, imageTargetBlock).Result; //仅用一个线程去获取新闻内容，另外一个线程取图片
+            Task<int> result = GetNewsListWorker.GetNewsList(imageSaverTask, imageTargetBlock); //仅用一个线程去获取新闻内容，另外一个线程取图片
             Console.WriteLine("Get news list returns {0}, task is over", result.Result);
             GetForumsWorker.GetForumsList();
             GetSpecialTopicWorker.GetSpecialTopic();

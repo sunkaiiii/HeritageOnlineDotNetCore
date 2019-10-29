@@ -43,7 +43,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     //每10条进行一次数据库插入，减少内存负担
                     if (result.Count == 10)
                     {
-                        MongodbSaver.SaveNewsList(result);
+                        MongodbSaver.SaveSpecificTopicList(result);
                         result.Clear();
                     }
                 }

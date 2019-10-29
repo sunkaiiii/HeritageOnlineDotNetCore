@@ -19,7 +19,7 @@ namespace HeritageWebServiceDotNetCore.Service
             _newsList = database.GetCollection<NewsList>(settings.Collections.NewsListCollectionName);
         }
 
-        public List<NewsList> Get() => _newsList.Find(newsList => true).Limit(20).ToList();
+        public List<NewsList> Get() => _newsList.Find(bson => true).SortByDescending(bson => bson.date).Limit(20).ToList();
 
         public List<NewsList> Get(int pages)
         {
@@ -28,8 +28,7 @@ namespace HeritageWebServiceDotNetCore.Service
             {
                 return null;
             }
-            return _newsList.Find(NewsList => true).Skip(20 * (pages - 1)).Limit(20).ToList();
+            return _newsList.Find(NewsList => true).SortByDescending(bson => bson.date).Skip(20 * (pages - 1)).Limit(20).ToList();
         }
-
     }
 }

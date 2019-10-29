@@ -66,7 +66,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     var imgNode = node.SelectSingleNode(".//img");
                     if (imgNode != null)
                     {
-                        newsBson.Add("image", imgNode.Attributes["src"].Value);
+                        newsBson.Add("img", imgNode.Attributes["src"].Value);
                         imageTargetBlock.Post(GetIhChina.MAIN_PAGE + imgNode.Attributes["src"].Value);
                     }
                     var dataNode = node.SelectSingleNode(".//div[@class='date']/div");

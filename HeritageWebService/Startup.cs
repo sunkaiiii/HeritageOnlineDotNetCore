@@ -63,7 +63,9 @@ namespace HeritageWebService
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             //为所有的请求添加拦截器
-            services.AddMvc(options => options.Filters.Add<BaseInformationFilter>());
+            services.AddMvc(options => {
+                options.Filters.Add<BaseInformationFilter>();
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

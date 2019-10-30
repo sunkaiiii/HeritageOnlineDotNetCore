@@ -13,7 +13,7 @@ namespace HeritageWebServiceDotNetCore.Model
         public string Id { get; set; }
         public string link;
         public string title;
-        public string image;
+        public string img;
         public string date;
         public string content;
     }

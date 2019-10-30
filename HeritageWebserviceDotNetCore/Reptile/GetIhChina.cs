@@ -60,7 +60,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                                               .Add("text", links.InnerText)
                                               .Add("date", links.ParentNode.ParentNode.FirstChild.InnerText);
             //TODO 第一新闻有图片页，且格式不同，需要适配
-            if (nodes != null)
+            if (nodes != null && nodes.Count()>0)
             {
                 MongodbSaver.SaveMainpageNewsList(nodes);
                 foreach (var node in nodes)

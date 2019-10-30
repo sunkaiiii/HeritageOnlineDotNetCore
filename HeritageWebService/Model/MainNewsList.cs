@@ -14,7 +14,7 @@ namespace HeritageWebService.Model
 
         public string Id { get; set; }
 
-        [BsonElement("url")]
+        [BsonElement("link")]
         [Required]
         public string DetailPageUrl { get; set; }
 

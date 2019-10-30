@@ -109,7 +109,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 if (picNode != null)
                 {
                     lineDic["type"] = "img";
-                    lineDic["content"] = picNode.Attributes["src"].Value;
+                    lineDic["content"] = WebpageHelper.GetSubUrl(picNode.Attributes["src"].Value);
                     imageBlock.Post(GetIhChina.MAIN_PAGE + picNode.Attributes["src"].Value);
                 }
                 else

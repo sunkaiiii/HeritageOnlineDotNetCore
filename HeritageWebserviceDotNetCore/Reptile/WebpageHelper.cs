@@ -49,8 +49,16 @@ namespace HeritageWebserviceDotNetCore.Reptile
 #endif
             var request = WebRequest.Create(url);
             request.Method = "GET";
-            var responseStream = request.GetResponse().GetResponseStream();
-            var result = new StreamReader(responseStream).ReadToEnd().ToString();
+            var result = "";
+            try
+            {
+                var responseStream = request.GetResponse().GetResponseStream();
+                result = new StreamReader(responseStream).ReadToEnd().ToString();
+            }catch(Exception e)
+            {
+                Console.WriteLine(e);
+                return result;
+            }
 #if DEBUG
             WebPageSaver.SaveSimpleRequestResult(url,result);
 #endif
@@ -111,7 +119,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
             if (imageNode != null)
             {
                 var imgUrl = imageNode.Attributes["src"].Value;
-                bson.Add("img", imgUrl);
+                bson.Add("img", WebpageHelper.GetSubUrl(imgUrl));
                 WebImageSaver.Instance.ImageTargetBlock.Post(GetIhChina.MAIN_PAGE+imgUrl);
             }
             Console.WriteLine(bson.ToString());

@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using HeritageWebserviceReptileDotNetCore.Reptile;
 
 namespace HeritageWebserviceDotNetCore.Reptile
 {
@@ -26,11 +27,15 @@ namespace HeritageWebserviceDotNetCore.Reptile
             var imageTargetBlock = WebImageSaver.Instance.ImageTargetBlock;
             var imageSaverTask = WebImageSaver.Instance.SaveFileAsync(imageTargetBlock);
             getMainPageList();
-            GetNewsListWorker.GetNewsList(imageSaverTask, imageTargetBlock).Wait(); //仅用一个线程去获取新闻内容，另外一个线程取图片
+            Task<int> result = GetNewsListWorker.GetNewsList(imageSaverTask, imageTargetBlock); //仅用一个线程去获取新闻内容，另外一个线程取图片
+            Console.WriteLine("Get news list returns {0}, task is over", result.Result);
             GetForumsWorker.GetForumsList();
             GetSpecialTopicWorker.GetSpecialTopic();
+            GetHeritageProjects.GetHeritageProject();
+            Console.WriteLine("All processes have been completed, now waiting for image downloading...");
             imageTargetBlock.Complete();
-            imageSaverTask.Wait();
+            Console.WriteLine("image task returns {0}, task is over", imageSaverTask.Result);
+            Console.WriteLine("Image downloading has been finished");
         }
 
         private static void getMainPageList()
@@ -44,14 +49,27 @@ namespace HeritageWebserviceDotNetCore.Reptile
             doc = web.Load(url);
 //#endif
             IEnumerable<BsonDocument> nodes = from links in doc.DocumentNode.Descendants()
-                                              where links.Name == "a" && links.Attributes["href"] != null && links.InnerText.Trim().Length > 0 && links.Attributes["href"].Value.Contains("news_details")
-                                              select new BsonDocument().Add("url", links.Attributes["href"].Value).Add("text", links.InnerText).Add("date", links.ParentNode.ParentNode.FirstChild.InnerText);
+                                              where
+                                              links.Name == "a"
+                                              && links.Attributes["href"] != null
+                                              && links.InnerText.Trim().Length > 0
+                                              && links.Attributes["href"].Value.Contains("news_details")
+                                              && !MongodbChecker.CheckMainNewsList(links.Attributes["href"].Value)
+                                              select new BsonDocument()
+                                              .Add("link", links.Attributes["href"].Value)
+                                              .Add("text", links.InnerText)
+                                              .Add("date", links.ParentNode.ParentNode.FirstChild.InnerText);
             //TODO 第一新闻有图片页，且格式不同，需要适配
-            MongodbSaver.SaveMainpageNewsList(nodes);
-            foreach (var node in nodes)
+            if (nodes != null && nodes.Count()>0)
             {
-                Console.WriteLine(node["url"].AsBsonValue + " " + node["text"].AsBsonValue + " " + node["date"].AsBsonValue);
+                MongodbSaver.SaveMainpageNewsList(nodes);
+                foreach (var node in nodes)
+                {
+                    Console.WriteLine(node["url"].AsBsonValue + " " + node["text"].AsBsonValue + " " + node["date"].AsBsonValue);
+                }
             }
+
+
         }
     }
 }

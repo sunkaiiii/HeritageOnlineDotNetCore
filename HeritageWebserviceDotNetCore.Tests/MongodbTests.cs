@@ -75,19 +75,31 @@ namespace HeritageWebserviceDotNetCore.Tests
             Assert.IsFalse(MongodbChecker.CheckNewsDetailExist(GetTestLink()));
         }
 
-        [Test]
-        public void TestForumsChecker()
+        private void TestMongodbListCollection(Action<List<BsonDocument>> addAction,Func<BsonDocument,bool> deleteAction,Func<string,bool> checkAction)
         {
             var bson = CreateTestBson();
             var insertList = new List<BsonDocument>();
             insertList.Add(bson);
-            MongodbSaver.SaveForumsList(insertList);
-            Assert.IsTrue(MongodbChecker.CheckForumsListExist(GetTestLink()));
-            Assert.IsFalse(MongodbChecker.CheckForumsListExist(GetBTestLink()));
-            Assert.IsTrue(MongodbDeleter.DeleteForumNews(bson));
-            Assert.IsFalse(MongodbDeleter.DeleteForumNews(CreateEmptyBson()));
-            Assert.IsFalse(MongodbDeleter.DeleteForumNews(CreateBTestBson()));
-            Assert.IsFalse(MongodbChecker.CheckForumsListExist(GetTestLink()));
+            addAction(insertList);
+            Assert.IsTrue(checkAction(GetTestLink()));
+            Assert.IsFalse(checkAction(GetBTestLink()));
+            Assert.IsTrue(deleteAction(bson));
+            Assert.IsFalse(deleteAction(CreateEmptyBson()));
+            Assert.IsFalse(deleteAction(CreateBTestBson()));
+            Assert.IsFalse(checkAction(GetTestLink()));
+
+        }
+
+        [Test]
+        public void TestForumsChecker()
+        {
+            TestMongodbListCollection(MongodbSaver.SaveForumsList, MongodbDeleter.DeleteForumNews, MongodbChecker.CheckForumsListExist);
+        }
+
+        [Test]
+        public void TestHeritageProject()
+        {
+            TestMongodbListCollection(MongodbSaver.SaveHeritageProjectNewsList, MongodbDeleter.DeleteHeritageProject, MongodbChecker.CheckHeritageProjectExist);
         }
     }
 }

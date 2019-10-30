@@ -24,6 +24,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 var listNodes = doc.DocumentNode.SelectNodes("//div[@id='datalist']/div[@class='list-item']");
                 if (listNodes == null)
                 {
+                    errorTime++;
                     continue ;
                 }
                 List<BsonDocument> result = new List<BsonDocument>();

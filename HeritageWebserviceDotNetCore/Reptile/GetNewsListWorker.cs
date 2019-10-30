@@ -37,6 +37,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 var jsonObject = JsonConvert.DeserializeObject<NewsListResponse>(result);
                 if (jsonObject.more != 1 && String.IsNullOrEmpty(jsonObject.data))
                 {
+                    Console.WriteLine("GetNewsList: There is no more here, break from the loop");
                     break;
                 }
                 var doc = new HtmlDocument();
@@ -65,7 +66,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     var imgNode = node.SelectSingleNode(".//img");
                     if (imgNode != null)
                     {
-                        newsBson.Add("image", imgNode.Attributes["src"].Value);
+                        newsBson.Add("img", WebpageHelper.GetSubUrl(imgNode.Attributes["src"].Value));
                         imageTargetBlock.Post(GetIhChina.MAIN_PAGE + imgNode.Attributes["src"].Value);
                     }
                     var dataNode = node.SelectSingleNode(".//div[@class='date']/div");

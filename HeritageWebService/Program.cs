@@ -18,7 +18,7 @@ namespace HeritageWebService
     {
         public static void Main(string[] args)
         {
-            ThreadPool.QueueUserWorkItem((state)=>GetIhChina.StartReptile());
+            //ThreadPool.QueueUserWorkItem((state)=>GetIhChina.StartReptile());
             CreateWebHostBuilder(args).Build().Run();
         }
 

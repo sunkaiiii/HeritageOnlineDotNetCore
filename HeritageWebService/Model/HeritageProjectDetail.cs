@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 
 namespace HeritageWebServiceDotNetCore.Model
 {
-    public class NewsList
+    public class HeritageProjectDetail
     {
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string Id { get; set; }
-        public string link;
+
         public string title;
-        public string img;
-        public string date;
-        public string content;
+        public string link;
+        public string text;
+        public List<string> desc;
+        public List<BottomTableRow> inheritate;
+        public List<BottomTableRow> ralevant;
     }
 }

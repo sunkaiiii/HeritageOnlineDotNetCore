@@ -1,7 +1,7 @@
 ﻿using System;
 namespace HeritageWebServiceDotNetCore.Model
 {
-    public class BaseRequest
+    public class BaseInfo
     {
         public string AndroidVersion { get; set; }
         public string Language { get; set; }

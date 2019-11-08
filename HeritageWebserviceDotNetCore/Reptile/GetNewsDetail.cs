@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using MongoDB.Bson;
 using HeritageWebserviceDotNetCore.Mongodb;
+using HeritageWebserviceReptileDotNetCore.Reptile;
 
 namespace HeritageWebserviceDotNetCore.Reptile
 {
@@ -110,7 +111,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 {
                     lineDic["type"] = "img";
                     lineDic["content"] = WebpageHelper.GetSubUrl(picNode.Attributes["src"].Value);
-                    imageBlock.Post(GetIhChina.MAIN_PAGE + picNode.Attributes["src"].Value);
+                    imageBlock.Post(GetIhChina.MainPage + picNode.Attributes["src"].Value);
                 }
                 else
                 {

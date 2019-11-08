@@ -14,11 +14,9 @@ namespace HeritageWebServiceDotNetCore.Controllers
         {
             base.OnActionExecuting(context);
             var query = context.HttpContext.Request.Query;
-            if(query.ContainsKey(typeof(BaseRequest).Name))
-            {
-                var baseRequestString = query[typeof(BaseRequest).Name];
-                var baseSetting=JsonConvert.DeserializeObject<BaseRequest>(baseRequestString);
-            }
+            if (!query.ContainsKey(typeof(BaseRequest).Name)) return;
+            var baseRequestString = query[typeof(BaseRequest).Name];
+            var baseSetting=JsonConvert.DeserializeObject<BaseRequest>(baseRequestString);
         }
     }
 }

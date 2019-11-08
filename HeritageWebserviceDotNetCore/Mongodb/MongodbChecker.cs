@@ -17,51 +17,51 @@ namespace HeritageWebserviceDotNetCore.Mongodb
 
         public static bool CheckMainNewsList(string newsUrl)
         {
-            return checkLink(MongodbMain.MAIN_PAGE, newsUrl);
+            return checkLink(MongodbMain.Banner, newsUrl);
         }
 
         public static bool CheckNewsExist(string newsUrl)
         {
-            return checkLink(MongodbMain.NEWS_LIST, newsUrl);
+            return checkLink(MongodbMain.NewsList, newsUrl);
         }
 
         public static bool CheckNewsDetailExist(string newsUrl)
         {
-            return checkLink(MongodbMain.NEWS_DETAIL, newsUrl);
+            return checkLink(MongodbMain.NewsDetail, newsUrl);
         }
 
         public static bool CheckForumsListExist(string forumsUrl)
         {
-            return checkLink(MongodbMain.FORUMS_LIST, forumsUrl);
+            return checkLink(MongodbMain.ForumsList, forumsUrl);
         }
 
         public static bool CheckForumsDetailExist(string detailUrl)
         {
-            return checkLink(MongodbMain.FORUMS_DETAIL, detailUrl);
+            return checkLink(MongodbMain.ForumsDetail, detailUrl);
         }
 
         public static bool CheckSpecialListNewsListExist(string newsList)
         {
-            return checkLink(MongodbMain.SPECIFIC_TOPIC, newsList);
+            return checkLink(MongodbMain.SpecificTopic, newsList);
         }
         public static bool CheckSpecialListNewsDetailExist(string detailUrl)
         {
-            return checkLink(MongodbMain.SPECIFIC_TOPIC_DETAIL, detailUrl);
+            return checkLink(MongodbMain.SpecificTopicDetail, detailUrl);
         }
 
         internal static bool CheckHeritageProjectInheritatePeopleExist(string url)
         {
-            return checkLink(MongodbMain.HEIRTAGE_INHERITATE_PEOPLE,url);
+            return checkLink(MongodbMain.HeirtageInheritatePeople,url);
         }
 
         public static bool CheckHeritageProjectExist(string url)
         {
-            return checkLink(MongodbMain.HERITAGE_PROJECT, url);
+            return checkLink(MongodbMain.HeritageProject, url);
         }
 
         public static bool CheckHeritageProjectDetailExist(string detailUrl)
         {
-            return checkLink(MongodbMain.HERITAGE_PROJECT_DETAIL, detailUrl);
+            return checkLink(MongodbMain.HeritageProjectDetail, detailUrl);
         }
     }
 }

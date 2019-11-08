@@ -9,7 +9,7 @@ namespace HeritageWebserviceReptileDotNetCore.Mongodb
     {
        public static void UpdateHeritageProjectMainContent(BsonDocument bson)
         {
-            MongodbMain.GetCollection(MongodbMain.HERITAGE_PROJECT_MAIN_PAGE).FindOneAndUpdate(new BsonDocument(), bson);
+            MongodbMain.GetCollection(MongodbMain.HeritageProjectMainPage).FindOneAndUpdate(new BsonDocument(), bson);
         }
     }
 }

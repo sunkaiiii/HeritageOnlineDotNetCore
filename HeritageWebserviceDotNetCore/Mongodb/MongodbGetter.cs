@@ -9,7 +9,7 @@ namespace HeritageWebserviceReptileDotNetCore.Mongodb
     {
         public static BsonDocument GetHeritageProjectMainPageDesc()
         {
-            var collection = MongodbMain.GetCollection(MongodbMain.HERITAGE_PROJECT_MAIN_PAGE);
+            var collection = MongodbMain.GetCollection(MongodbMain.HeritageProjectMainPage);
             var result = collection.Find<BsonDocument>(new BsonDocument());
             if(result.Count()==0)
             {

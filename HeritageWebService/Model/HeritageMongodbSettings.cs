@@ -14,7 +14,7 @@ namespace HeritageWebServiceDotNetCore.Model
 
     public class Collections
     {
-        public string MainPageCollectionName { get; set; }
+        public string BannerCollectionName { get; set; }
         public string NewsDetailCollectionName { get; set; }
         public string NewsListCollectionName { get; set; }
         public string HeritageProjectName { get; set; }

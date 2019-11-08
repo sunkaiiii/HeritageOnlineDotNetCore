@@ -3,6 +3,8 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using HeritageWebserviceReptileDotNetCore.Reptile;
+
 namespace HeritageWebserviceDotNetCore.Reptile
 {
     class WebImageSaver
@@ -31,9 +33,9 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 {
                     continue;
                 }
-                if (!imageUrl.StartsWith(GetIhChina.MAIN_PAGE))
+                if (!imageUrl.StartsWith(GetIhChina.MainPage))
                 {
-                    imageUrl = GetIhChina.MAIN_PAGE + imageUrl;
+                    imageUrl = GetIhChina.MainPage + imageUrl;
                 }
                 try
                 {

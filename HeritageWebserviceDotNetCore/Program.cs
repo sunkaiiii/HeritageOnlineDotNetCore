@@ -1,11 +1,6 @@
-﻿using HeritageWebserviceDotNetCore.Reptile;
-using HeritageWebserviceReptileDotNetCore.Reptile;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using System;
-using System.Linq;
+﻿using HeritageWebserviceReptileDotNetCore.Reptile;
 
-namespace HeritageWebserviceDotNetCore
+namespace HeritageWebserviceReptileDotNetCore
 {
     class Program
     {

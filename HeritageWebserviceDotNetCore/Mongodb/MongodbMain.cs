@@ -10,44 +10,43 @@ namespace HeritageWebserviceDotNetCore.Mongodb
         private static readonly Lazy<MongodbMain> lazy = new Lazy<MongodbMain>(() => new MongodbMain());
         public static MongodbMain Instance { get { return lazy.Value; } }
 
-        internal static readonly string MAIN_PAGE = "main_page";
-        internal static readonly string NEWS_LIST = "news_list";
-        internal static readonly string NEWS_DETAIL = "news_detail";
-        internal static readonly string FORUMS_LIST = "forums_list";
-        internal static readonly string FORUMS_DETAIL = "forums_detail";
-        internal static readonly string SPECIFIC_TOPIC = "specific_topic";
-        internal static readonly string SPECIFIC_TOPIC_DETAIL = "specific_topic_detail";
-        internal static readonly string HERITAGE_PROJECT_MAIN_PAGE = "heritage_project_main_page";
-        internal static readonly string HERITAGE_PROJECT = "heritage_project";
-        internal static readonly string HERITAGE_PROJECT_DETAIL = "heritage_project_detail";
-        internal static readonly string HEIRTAGE_INHERITATE_PEOPLE = "heritage_inheritate_people";
+        internal const string Banner = "banner";
+        internal const string NewsList = "news_list";
+        internal const string NewsDetail = "news_detail";
+        internal const string ForumsList = "forums_list";
+        internal const string ForumsDetail = "forums_detail";
+        internal const string SpecificTopic = "specific_topic";
+        internal const string SpecificTopicDetail = "specific_topic_detail";
+        internal const string HeritageProjectMainPage = "heritage_project_main_page";
+        internal const string HeritageProject = "heritage_project";
+        internal const string HeritageProjectDetail = "heritage_project_detail";
+        internal const string HeirtageInheritatePeople = "heritage_inheritate_people";
 
         internal Dictionary<string, MongoDB.Driver.IMongoCollection<BsonDocument>> COLLECTIONS;
-        private readonly MongoClient client;
-        internal readonly IMongoDatabase Database;
+        internal readonly IMongoDatabase database;
 
         private MongodbMain()
         {
-            client = new MongoClient("mongodb://localhost:27017");
-            Database = client.GetDatabase("heritage");
+            var client = new MongoClient("mongodb://localhost:27017");
+            database = client.GetDatabase("heritage");
             List<string> collectionString = new List<string>
             {
-                MAIN_PAGE,
-                NEWS_LIST,
-                NEWS_DETAIL,
-                FORUMS_LIST,
-                FORUMS_DETAIL,
-                SPECIFIC_TOPIC,
-                SPECIFIC_TOPIC_DETAIL,
-                HERITAGE_PROJECT_MAIN_PAGE,
-                HERITAGE_PROJECT,
-                HERITAGE_PROJECT_DETAIL,
-                HEIRTAGE_INHERITATE_PEOPLE
+                Banner,
+                NewsList,
+                NewsDetail,
+                ForumsList,
+                ForumsDetail,
+                SpecificTopic,
+                SpecificTopicDetail,
+                HeritageProjectMainPage,
+                HeritageProject,
+                HeritageProjectDetail,
+                HeirtageInheritatePeople
             };
             COLLECTIONS = new Dictionary<string, IMongoCollection<BsonDocument>>();
             foreach (var collectionName in collectionString)
             {
-                COLLECTIONS[collectionName] = Database.GetCollection<BsonDocument>(collectionName);
+                COLLECTIONS[collectionName] = database.GetCollection<BsonDocument>(collectionName);
             }
   
         }

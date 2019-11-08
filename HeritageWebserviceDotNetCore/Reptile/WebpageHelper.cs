@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks.Dataflow;
+using HeritageWebserviceReptileDotNetCore.Reptile;
 using HtmlAgilityPack;
 using MongoDB.Bson;
 
@@ -28,13 +29,13 @@ namespace HeritageWebserviceDotNetCore.Reptile
 
         public static string CorrectRequestString(string url)
         {
-            if (!url.StartsWith(GetIhChina.MAIN_PAGE)) //当连接不是以MAIN_PAGE开头的时候，为期添加HOST_NAME
+            if (!url.StartsWith(GetIhChina.MainPage)) //当连接不是以MAIN_PAGE开头的时候，为期添加HOST_NAME
             {
                 if (!url.StartsWith(@"/")) //有些时候，解析的link会添加奇怪的字符，剪裁到第一个链接出现
                 {
                     url = url.Substring(url.IndexOf(@"/"));
                 }
-                url = GetIhChina.MAIN_PAGE + url;
+                url = GetIhChina.MainPage + url;
             }
             return url;
         }
@@ -120,7 +121,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
             {
                 var imgUrl = imageNode.Attributes["src"].Value;
                 bson.Add("img", WebpageHelper.GetSubUrl(imgUrl));
-                WebImageSaver.Instance.ImageTargetBlock.Post(GetIhChina.MAIN_PAGE+imgUrl);
+                WebImageSaver.Instance.ImageTargetBlock.Post(GetIhChina.MainPage+imgUrl);
             }
             Console.WriteLine(bson.ToString());
             return bson;

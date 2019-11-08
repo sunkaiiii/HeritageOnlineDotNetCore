@@ -18,22 +18,22 @@ namespace HeritageWebserviceDotNetCore.Mongodb
         }
         public static bool DeleteNews(BsonDocument filter)
         {
-            return Delete(filter, MongodbMain.NEWS_LIST);
+            return Delete(filter, MongodbMain.NewsList);
         }
 
         public static bool DeleteNewsDetail(BsonDocument filter)
         {
-            return Delete(filter, MongodbMain.NEWS_DETAIL); 
+            return Delete(filter, MongodbMain.NewsDetail); 
         }
 
         public static bool DeleteForumNews(BsonDocument filter)
         {
-            return Delete(filter, MongodbMain.FORUMS_LIST);
+            return Delete(filter, MongodbMain.ForumsList);
         }
 
         public static bool DeleteHeritageProject(BsonDocument filter)
         {
-            return Delete(filter, MongodbMain.HERITAGE_PROJECT);
+            return Delete(filter, MongodbMain.HeritageProject);
         }
     }
 }

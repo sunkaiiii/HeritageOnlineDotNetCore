@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HeritageWebService.Model
 {
-    public class MainNewsList
+    public class Banner
     {
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
@@ -16,14 +16,10 @@ namespace HeritageWebService.Model
 
         [BsonElement("link")]
         [Required]
-        public string DetailPageUrl { get; set; }
+        public string Link { get; set; }
 
-        [BsonElement("text")]
+        [BsonElement("img")]
         [Required]
-        public string Title { get; set; }
-
-        [BsonElement("date")]
-        [Required]
-        public string Date { get; set; }
+        public string Img { get; set; }
     }
 }

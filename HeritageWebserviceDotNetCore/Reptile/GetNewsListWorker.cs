@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using HeritageWebserviceReptileDotNetCore.Reptile;
 
 namespace HeritageWebserviceDotNetCore.Reptile
 {
@@ -32,7 +33,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     break;
                 }
                 Console.WriteLine("starting process {0} page", page);
-                string pageURL = String.Format("{0}?category_id=9&page={1}&limit=0", GetIhChina.NEWS_LIST_URL, page);
+                string pageURL = String.Format("{0}?category_id=9&page={1}&limit=0", GetIhChina.NewsListUrl, page);
                 var result = WebpageHelper.GetRequest(pageURL);
                 var jsonObject = JsonConvert.DeserializeObject<NewsListResponse>(result);
                 if (jsonObject.more != 1 && String.IsNullOrEmpty(jsonObject.data))
@@ -67,7 +68,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     if (imgNode != null)
                     {
                         newsBson.Add("img", WebpageHelper.GetSubUrl(imgNode.Attributes["src"].Value));
-                        imageTargetBlock.Post(GetIhChina.MAIN_PAGE + imgNode.Attributes["src"].Value);
+                        imageTargetBlock.Post(GetIhChina.MainPage + imgNode.Attributes["src"].Value);
                     }
                     var dataNode = node.SelectSingleNode(".//div[@class='date']/div");
                     if (dataNode != null)

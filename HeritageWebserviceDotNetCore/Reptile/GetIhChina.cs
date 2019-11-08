@@ -1,33 +1,30 @@
-﻿using HeritageWebserviceDotNetCore.Mongodb;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using HeritageWebserviceDotNetCore.Mongodb;
+using HeritageWebserviceDotNetCore.Reptile;
 using HtmlAgilityPack;
 using MongoDB.Bson;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Collections;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
-using HeritageWebserviceReptileDotNetCore.Reptile;
 
-namespace HeritageWebserviceDotNetCore.Reptile
+namespace HeritageWebserviceReptileDotNetCore.Reptile
 {
     public class GetIhChina
     {
-        internal const string MAIN_PAGE = "http://www.ihchina.cn";
-        internal const string NEWS_LIST_URL = MAIN_PAGE + "/Article/Index/getList.html";
-        private static readonly HttpClient client = new HttpClient();
-        private Dictionary<String, String> classificaton = new Dictionary<string, string> { { "新闻动态", "u11" }, { "论坛", "u12" }, { "专题报道", "u13" } };
+        internal const string MainPage = "http://www.ihchina.cn";
+        internal const string NewsListUrl = MainPage + "/Article/Index/getList.html";
+        private static readonly HttpClient Client = new HttpClient();
+
+        private Dictionary<string, string> classificaton = new Dictionary<string, string>
+            {{"新闻动态", "u11"}, {"论坛", "u12"}, {"专题报道", "u13"}};
+
         public static void StartReptile()
         {
             var imageTargetBlock = WebImageSaver.Instance.ImageTargetBlock;
             var imageSaverTask = WebImageSaver.Instance.SaveFileAsync(imageTargetBlock);
-            getMainPageList();
-            Task<int> result = GetNewsListWorker.GetNewsList(imageSaverTask, imageTargetBlock); //仅用一个线程去获取新闻内容，另外一个线程取图片
+            GetBanner();
+            var result = GetNewsListWorker.GetNewsList(imageSaverTask, imageTargetBlock); //仅用一个线程去获取新闻内容，另外一个线程取图片
             Console.WriteLine("Get news list returns {0}, task is over", result.Result);
             GetForumsWorker.GetForumsList();
             GetSpecialTopicWorker.GetSpecialTopic();
@@ -38,38 +35,30 @@ namespace HeritageWebserviceDotNetCore.Reptile
             Console.WriteLine("Image downloading has been finished");
         }
 
-        private static void getMainPageList()
+        private static void GetBanner()
         {
-            var doc = new HtmlDocument();
-//#if DEBUG
-           // doc.Load(@".\mainPageHtml.html");
-//#else
-            var url = MAIN_PAGE;
-            var web = new HtmlWeb();
-            doc = web.Load(url);
-//#endif
-            IEnumerable<BsonDocument> nodes = from links in doc.DocumentNode.Descendants()
-                                              where
-                                              links.Name == "a"
-                                              && links.Attributes["href"] != null
-                                              && links.InnerText.Trim().Length > 0
-                                              && links.Attributes["href"].Value.Contains("news_details")
-                                              && !MongodbChecker.CheckMainNewsList(links.Attributes["href"].Value)
-                                              select new BsonDocument()
-                                              .Add("link", links.Attributes["href"].Value)
-                                              .Add("text", links.InnerText)
-                                              .Add("date", links.ParentNode.ParentNode.FirstChild.InnerText);
-            //TODO 第一新闻有图片页，且格式不同，需要适配
-            if (nodes != null && nodes.Count()>0)
+            var doc = WebpageHelper.GetHttpRequestDocument(MainPage);
+            var nodes = from links in doc.DocumentNode.Descendants()
+                where
+                    links.Name == "a"
+                    && links.Attributes["href"] != null
+                    && links.Attributes["class"] != null
+                    && links.Attributes["class"].Value.Equals("slick-link p-show")
+                    && !MongodbChecker.CheckMainNewsList(links.Attributes["href"].Value)
+                select new BsonDocument()
+                    .Add("link", links.Attributes["href"].Value)
+                    .Add("img",
+                        links.Attributes["style"].Value.Substring(
+                            links.Attributes["style"].Value.IndexOf("/", StringComparison.Ordinal),
+                            links.Attributes["style"].Value.LastIndexOf(")", StringComparison.Ordinal) -
+                            links.Attributes["style"].Value.IndexOf("/", StringComparison.Ordinal)));
+            var enumerable = nodes as BsonDocument[] ?? nodes.ToArray();
+            if (!enumerable.Any()) return;
+            MongodbSaver.SaveMainpageNewsList(nodes);
+            foreach (var node in enumerable)
             {
-                MongodbSaver.SaveMainpageNewsList(nodes);
-                foreach (var node in nodes)
-                {
-                    Console.WriteLine(node["url"].AsBsonValue + " " + node["text"].AsBsonValue + " " + node["date"].AsBsonValue);
-                }
+                Console.WriteLine(node["link"].AsBsonValue + " " + node["img"].AsBsonValue);
             }
-
-
         }
     }
 }

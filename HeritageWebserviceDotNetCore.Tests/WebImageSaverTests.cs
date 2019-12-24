@@ -24,11 +24,18 @@ namespace HeritageWebserviceRetileDotNetCore.Tests
         [Test]
         public void TestImageCompress()
         {
-            var imagePath = "/Users/sunkai/Documents/GitHub/HeritageOnlineDotNetCore/HeritageWebserviceDotNetCore/img/DSC01789.JPG";
+            var imagePath = "/Users/sunkai/Documents/GitHub/HeritageOnlineDotNetCore/HeritageWebService/img/s5bf789c69c6cb.jpg";
             WebImageSaver.Instance.CompressImage(imagePath);
             Assert.IsTrue(File.Exists(WebImageSaver.Instance.GetComressImageName(imagePath)));
         }
 
+        [Test]
+        public void TestCompressImageWithGuetzli()
+        {
+            var imagePath = "/Users/sunkai/Documents/GitHub/HeritageOnlineDotNetCore/HeritageWebService/img/s5bf789c69c6cb.jpg";
+            WebImageSaver.Instance.CompressImageWithGuetzli(imagePath);
+            Assert.IsTrue(File.Exists(imagePath));
+        }
 
     }
 }

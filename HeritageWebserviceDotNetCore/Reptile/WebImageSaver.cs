@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -88,7 +89,6 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 Console.WriteLine("Height:"+resizeHeight + " Width:" + resizeWidth);
                 image.Mutate(x => x.Resize(resizeWidth, resizeHeight));
                 var saveCompressName = GetComressImageName(savePath);
-                var extensionName = Path.GetExtension(saveCompressName);
                 image.Save(saveCompressName);
                 
             }
@@ -98,5 +98,17 @@ namespace HeritageWebserviceDotNetCore.Reptile
         {
             return Path.Combine(Path.GetDirectoryName(originalSavePath),Path.GetFileNameWithoutExtension(originalSavePath)) + "_compress" + Path.GetExtension(originalSavePath);
         }
+
+        public void CompressImageWithGuetzli(string imageName)
+        {
+            Process process = new Process();
+            process.StartInfo.FileName = "guetzli";
+            string argument = String.Format("--quality 84 {0} {1}", imageName, imageName);
+            process.StartInfo.Arguments = argument;
+            Console.WriteLine(argument);
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            process.Start();
+            process.WaitForExit();
+         }
     }
 }

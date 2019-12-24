@@ -28,14 +28,14 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     Directory.CreateDirectory("img");
                 }
                 var imageUrl = source.Receive();
+                if (!imageUrl.StartsWith(GetIhChina.MainPage))
+                {
+                    imageUrl = GetIhChina.MainPage + imageUrl;
+                }
                 var savePath = Path.Combine(Directory.GetCurrentDirectory(), "img", WebpageHelper.GetSubUrl(imageUrl));
                 if (File.Exists(savePath))
                 {
                     continue;
-                }
-                if (!imageUrl.StartsWith(GetIhChina.MainPage))
-                {
-                    imageUrl = GetIhChina.MainPage + imageUrl;
                 }
                 try
                 {

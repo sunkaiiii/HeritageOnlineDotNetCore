@@ -21,7 +21,7 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
 
         public static void StartReptile()
         {
-            var imageTargetBlock = WebImageSaver.Instance.ImageTargetBlock;
+            var imageTargetBlock = WebImageSaver.Instance.ImageTargetBlock; //初始化图片序列
             var imageSaverTask = WebImageSaver.Instance.SaveFileAsync(imageTargetBlock);
             GetBanner();
             var result = GetNewsListWorker.GetNewsList(imageSaverTask, imageTargetBlock); //仅用一个线程去获取新闻内容，另外一个线程取图片

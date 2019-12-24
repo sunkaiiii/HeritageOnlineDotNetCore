@@ -6,6 +6,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using HeritageWebserviceDotNetCore.Reptile;
+using HeritageWebserviceReptileDotNetCore.Reptile;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -18,7 +19,15 @@ namespace HeritageWebService
     {
         public static void Main(string[] args)
         {
-            //ThreadPool.QueueUserWorkItem((state)=>GetIhChina.StartReptile());
+            Task.Run(GetIhChina.StartReptile);
+            System.Timers.Timer timer = new System.Timers.Timer();
+            timer.Enabled = true;
+            timer.Interval = TimeSpan.FromDays(1).TotalMilliseconds;
+            timer.Start();
+            timer.Elapsed += (o, e) =>
+            {
+                Task.Run(GetIhChina.StartReptile);
+            };
             CreateWebHostBuilder(args).Build().Run();
         }
 

@@ -30,11 +30,16 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 List<BsonDocument> result = new List<BsonDocument>();
                 foreach(var node in listNodes)
                 {
+                    if(errorTime==10)
+                    {
+                        break;
+                    }
                     var bson = WebpageHelper.AnalizeGeneralListInformation(node, MongodbChecker.CheckForumsListExist);
                     if(bson==null)
                     {
                         errorTime++;
                         Console.WriteLine("duplicated url: page {0}", i);
+                        continue;
                     }
                     if (bson != null)
                     {
@@ -45,7 +50,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     //每10条进行一次数据库插入，减少内存负担
                     if (result.Count == 10)
                     {
-                        MongodbSaver.SaveNewsList(result);
+                        MongodbSaver.SaveForumsList(result);
                         result.Clear();
                     }
                 }

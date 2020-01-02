@@ -25,7 +25,7 @@ namespace HeritageWebserviceRetileDotNetCore.Tests
         public void TestImageCompress()
         {
             var imagePath = "/Users/sunkai/Documents/GitHub/HeritageOnlineDotNetCore/HeritageWebService/img/s5bf789c69c6cb.jpg";
-            WebImageSaver.Instance.CompressImage(imagePath);
+            WebImageSaver.Instance.CorpImage(imagePath);
             Assert.IsTrue(File.Exists(WebImageSaver.Instance.GetComressImageName(imagePath)));
         }
 

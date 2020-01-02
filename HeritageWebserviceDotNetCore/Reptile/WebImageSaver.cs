@@ -47,7 +47,8 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 {
                     Console.WriteLine("Starting to save image {0}", imageUrl);
                     wc.DownloadFile(imageUrl, savePath);
-                    CompressImage(savePath);
+                    CompressImageWithGuetzli(savePath);
+                    CorpImage(savePath);
                     Console.WriteLine("Save image {0} completely", imageUrl);
                 }
                 catch(WebException e)
@@ -65,7 +66,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
 
         //给原始图片做一次压缩
         //并且生成一个小图
-        public void CompressImage(string savePath)
+        public void CorpImage(string savePath)
         {
             const int boundWidth = 480;
             const int boundHeight = 320;
@@ -90,7 +91,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 image.Mutate(x => x.Resize(resizeWidth, resizeHeight));
                 var saveCompressName = GetComressImageName(savePath);
                 image.Save(saveCompressName);
-                
+                CompressImageWithGuetzli(saveCompressName);
             }
         }
 

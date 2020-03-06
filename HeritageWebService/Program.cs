@@ -19,14 +19,20 @@ namespace HeritageWebService
     {
         public static void Main(string[] args)
         {
-            Task.Run(GetIhChina.StartReptile);
+            Task.Run(async ()=>
+            {
+                await GetIhChina.StartReptile();
+            });
             System.Timers.Timer timer = new System.Timers.Timer();
             timer.Enabled = true;
             timer.Interval = TimeSpan.FromDays(1).TotalMilliseconds;
             timer.Start();
             timer.Elapsed += (o, e) =>
             {
-                Task.Run(GetIhChina.StartReptile);
+                Task.Run(async () =>
+                {
+                    await GetIhChina.StartReptile();
+                });
             };
             CreateWebHostBuilder(args).Build().Run();
         }

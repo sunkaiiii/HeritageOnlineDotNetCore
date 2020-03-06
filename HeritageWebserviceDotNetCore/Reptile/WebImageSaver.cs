@@ -51,11 +51,12 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     CorpImage(savePath);
                     Console.WriteLine("Save image {0} completely", imageUrl);
                 }
-                catch(WebException e)
+                catch (WebException e)
                 {
-                    Console.WriteLine("Save image {0} error",imageUrl);
+                    Console.WriteLine("Save image {0} error", imageUrl);
                     Console.WriteLine(e);
-                }catch(Exception e)
+                }
+                catch (Exception e)
                 {
                     Console.WriteLine("unhandled error");
                     Console.WriteLine(e);
@@ -73,21 +74,21 @@ namespace HeritageWebserviceDotNetCore.Reptile
             using (Image image = Image.Load(savePath))
             {
                 Console.WriteLine(image.GetType().Name);
-                int resizeWidth=image.Width;
-                int resizeHeight=image.Height;
-                if(resizeHeight > boundHeight)
+                int resizeWidth = image.Width;
+                int resizeHeight = image.Height;
+                if (resizeHeight > boundHeight)
                 {
                     double scale = (double)boundHeight / image.Height;
                     resizeHeight = (int)(resizeHeight * scale);
-                    resizeWidth = (int)(resizeWidth * scale);        
+                    resizeWidth = (int)(resizeWidth * scale);
                 }
-                if(resizeWidth>boundWidth)
+                if (resizeWidth > boundWidth)
                 {
                     double scale = (double)boundWidth / image.Width;
                     resizeWidth = (int)(resizeWidth * scale);
                     resizeHeight = (int)(resizeHeight * scale);
                 }
-                Console.WriteLine("Height:"+resizeHeight + " Width:" + resizeWidth);
+                Console.WriteLine("Height:" + resizeHeight + " Width:" + resizeWidth);
                 image.Mutate(x => x.Resize(resizeWidth, resizeHeight));
                 var saveCompressName = GetComressImageName(savePath);
                 image.Save(saveCompressName);
@@ -97,19 +98,27 @@ namespace HeritageWebserviceDotNetCore.Reptile
 
         public string GetComressImageName(string originalSavePath)
         {
-            return Path.Combine(Path.GetDirectoryName(originalSavePath),Path.GetFileNameWithoutExtension(originalSavePath)) + "_compress" + Path.GetExtension(originalSavePath);
+            return Path.Combine(Path.GetDirectoryName(originalSavePath), Path.GetFileNameWithoutExtension(originalSavePath)) + "_compress" + Path.GetExtension(originalSavePath);
         }
 
         public void CompressImageWithGuetzli(string imageName)
         {
-            Process process = new Process();
-            process.StartInfo.FileName = "guetzli";
-            string argument = String.Format("--quality 84 {0} {1}", imageName, imageName);
-            process.StartInfo.Arguments = argument;
-            Console.WriteLine(argument);
-            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            process.Start();
-            process.WaitForExit();
-         }
+            try
+            {
+                Process process = new Process();
+                process.StartInfo.FileName = "guetzli";
+                string argument = String.Format("--quality 84 {0} {1}", imageName, imageName);
+                process.StartInfo.Arguments = argument;
+                Console.WriteLine(argument);
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.Start();
+                process.WaitForExit();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+        }
     }
 }

@@ -19,19 +19,19 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
         private Dictionary<string, string> classificaton = new Dictionary<string, string>
             {{"新闻动态", "u11"}, {"论坛", "u12"}, {"专题报道", "u13"}};
 
-        public static void StartReptile()
+        public static async Task StartReptile()
         {
             var imageTargetBlock = WebImageSaver.Instance.ImageTargetBlock; //初始化图片序列
             var imageSaverTask = WebImageSaver.Instance.SaveFileAsync(imageTargetBlock);
             GetBanner();
-            var result = GetNewsListWorker.GetNewsList(imageSaverTask, imageTargetBlock); //仅用一个线程去获取新闻内容，另外一个线程取图片
-            Console.WriteLine("Get news list returns {0}, task is over", result.Result);
+            var result = GetNewsListWorker.GetNewsList(imageSaverTask, imageTargetBlock); //仅用一个线程去获取新闻内容，
+            Console.WriteLine("Get news list returns {0}, task is over", await result);
             GetForumsWorker.GetForumsList();
             GetSpecialTopicWorker.GetSpecialTopic();
             GetHeritageProjects.GetHeritageProject();
             Console.WriteLine("All processes have been completed, now waiting for image downloading...");
             imageTargetBlock.Complete();
-            Console.WriteLine("image task returns {0}, task is over", imageSaverTask.Result);
+            Console.WriteLine("image task returns {0}, task is over", await imageSaverTask);
             Console.WriteLine("Image downloading has been finished");
         }
 

@@ -6,7 +6,7 @@ namespace HeritageWebserviceReptileDotNetCore
     {
         static void Main(string[] args)
         {
-            GetIhChina.StartReptile() ;
+            GetIhChina.StartReptile().Wait() ;
             //GetForumsWorker.GetForumsList();
             //GetSpecialTopicWorker.GetSpecialTopic();
             // GetNewsDetail.GenerateNewsDetail(@"http://www.ihchina.cn/news_details/18992.html");

@@ -15,9 +15,9 @@ namespace HeritageWebServiceDotNetCore.Model
         public class TableContent
         {
             [BsonElement("key")]
-            public string Key;
+            public string Key { get; set; }
             [BsonElement("value")]
-            public string Value;
+            public string Value { get; set; }
         }
     }
 }

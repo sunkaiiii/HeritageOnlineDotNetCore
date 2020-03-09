@@ -19,16 +19,16 @@ namespace HeritageWebServiceDotNetCore.Service
             _newsList = database.GetCollection<NewsList>(settings.Collections.NewsListCollectionName);
         }
 
-        public List<NewsList> Get() => _newsList.Find(bson => true).SortByDescending(bson => bson.date).Limit(20).ToList();
+        public List<NewsList> Get() => _newsList.Find(bson => true).SortByDescending(bson => bson.Date).Limit(20).ToList();
 
         public List<NewsList> Get(int pages)
         {
             int startNum = (pages - 1) * 20;
-            if (startNum < 0 || startNum > _newsList.Count(new BsonDocument()))
+            if (startNum < 0 || startNum > _newsList.CountDocuments(new BsonDocument()))
             {
                 return null;
             }
-            return _newsList.Find(NewsList => true).SortByDescending(bson => bson.date).Skip(20 * (pages - 1)).Limit(20).ToList();
+            return _newsList.Find(NewsList => true).SortByDescending(bson => bson.Date).Skip(20 * (pages - 1)).Limit(20).ToList();
         }
     }
 }

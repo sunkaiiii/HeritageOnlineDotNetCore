@@ -12,24 +12,35 @@ namespace HeritageWebServiceDotNetCore.Model
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string Id { get; set; }
-        public string link;
-        public string title;
-        public List<string> subtitle;
-        public List<Item> content;
-        public string author;
-        public List<BottomRelativeNews> relativeNews;
+        [BsonElement("link")]
+        public string Link { get; set; }
+        [BsonElement("title")]
+        public string Title { get; set; }
+        [BsonElement("subtitle")]
+        public List<string> Subtitle { get; set; }
+        [BsonElement("content")]
+        public List<Item> Content { get; set; }
+        [BsonElement("author")]
+        public string Author { get; set; }
+        [BsonElement("relativeNews")]
+        public List<BottomRelativeNews> RelativeNews { get; set; }
 
        public class Item
         {
-            public string type;
-            public string content;
+            [BsonElement("type")]
+            public string Type { get; set; }
+            [BsonElement("content")]
+            public string Content { get; set; }
         }
 
         public class BottomRelativeNews
         {
-            public string link;
-            public string date;
-            public string title;
+            [BsonElement("link")]
+            public string Link { get; set; }
+            [BsonElement("date")]
+            public string Date { get; set; }
+            [BsonElement("title")]
+            public string Title { get; set; }
         }
     }
 }

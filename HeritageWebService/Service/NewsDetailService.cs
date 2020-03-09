@@ -18,6 +18,6 @@ namespace HeritageWebServiceDotNetCore.Service
             _newsDetails = database.GetCollection<NewsDetail>(settings.Collections.NewsDetailCollectionName);
         }
 
-        public NewsDetail Get(string link) => _newsDetails.Find(newsList => newsList.link == link).FirstOrDefault();
+        public NewsDetail Get(string link) => _newsDetails.Find(newsList => newsList.Link == link).FirstOrDefault();
     }
 }

@@ -11,14 +11,19 @@ namespace HeritageWebServiceDotNetCore.Model
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string Id { get; set;}
-        public string title;
-        public string content;
-        public List<NumberItem> numItem;
+        [BsonElement("title")]
+        public string Title { get; set; }
+        [BsonElement("content")]
+        public string Content { get; set; }
+        [BsonElement("numItem")]
+        public List<NumberItem> NumItem { get; set; }
 
         public class NumberItem
         {
-            public string num;
-            public string desc;
+            [BsonElement("num")]
+            public string Num { get; set; }
+            [BsonElement("desc")]
+            public string Desc { get; set; }
         }
     }
 }

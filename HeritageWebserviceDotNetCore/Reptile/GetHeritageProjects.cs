@@ -125,7 +125,7 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
         private static void GetAllProjectList()
         {
             short errorTime = 0;
-            var totalPages = 10;
+            var totalPages = DebugHelper.DebugHelperTools.IsDebugMode()?2:10;
             var block = new BufferBlock<string>();
             var task = GetHeritageProjectDetailWorker.GenerateProjectDetailPage(block);
             for (int i=1;i<totalPages;i++)
@@ -144,7 +144,9 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                     continue;
                 }
                 var jsonObject = JsonConvert.DeserializeObject<HeritageProjectRequest>(requestResult);
-                if(jsonObject.Links.Total_pages!=0&&jsonObject.Links.Total_pages!=totalPages)
+                if(jsonObject.Links.Total_pages!=0
+                    &&jsonObject.Links.Total_pages!=totalPages
+                    &&!DebugHelper.DebugHelperTools.IsDebugMode())
                 {
                     totalPages = jsonObject.Links.Total_pages;
                 }

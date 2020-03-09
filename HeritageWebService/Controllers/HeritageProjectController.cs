@@ -107,12 +107,12 @@ namespace HeritageWebServiceDotNetCore.Controllers
             )
         {
             HeritageProject filter = new HeritageProject();
-            filter.num = num;
-            filter.title = title;
-            filter.rx_time = rx_time;
-            filter.cate = cate;
-            filter.province = province;
-            filter.unit = unit;
+            filter.Num = num;
+            filter.Title = title;
+            filter.Rx_time = rx_time;
+            filter.Cate = cate;
+            filter.Province = province;
+            filter.Unit = unit;
             return _heritageProjectService.GetFilterSearchProjectList(filter, pages);
         }
 

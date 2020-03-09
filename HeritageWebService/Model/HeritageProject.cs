@@ -11,20 +11,35 @@ namespace HeritageWebServiceDotNetCore.Model
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string ObjId { get; set; }
-        public string id;
-        public string auto_id;//项目序号
-        public string num; //编号
-        public string title; //名称
-        public string type; //类别
-        public string reg_type;
-        public string rx_time; //公布时间
-        public string project_num;
-        public string cate; //类型
-        public string province; //申报地区或单位
-        public string city;
-        public string content;
-        public string playtype;
-        public string unit;
-        public string link;
+        [BsonElement("id")]
+        public string Id { get; set; }
+        [BsonElement("auto_id")]
+        public string Auto_id { get; set; }//项目序号
+        [BsonElement("num")]
+        public string Num { get; set; } //编号
+        [BsonElement("title")]
+        public string Title { get; set; } //名称
+        [BsonElement("type")]
+        public string Type { get; set; } //类别
+        [BsonElement("reg_type")]
+        public string Reg_type { get; set; }
+        [BsonElement("rx_time")]
+        public string Rx_time { get; set; } //公布时间
+        [BsonElement("project_num")]
+        public string Project_num { get; set; }
+        [BsonElement("cate")]
+        public string Cate { get; set; } //类型
+        [BsonElement("province")]
+        public string Province { get; set; } //申报地区或单位
+        [BsonElement("city")]
+        public string City { get; set; }
+        [BsonElement("content")]
+        public string Content { get; set; }
+        [BsonElement("playtype")]
+        public string Playtype { get; set; }
+        [BsonElement("unit")]
+        public string Unit { get; set; }
+        [BsonElement("link")]
+        public string Link { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks.Dataflow;
 using HeritageWebserviceDotNetCore.Mongodb;
+using HeritageWebserviceReptileDotNetCore.DebugHelper;
 using MongoDB.Bson;
 
 namespace HeritageWebserviceDotNetCore.Reptile
@@ -14,7 +15,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
             var task = GetNewsDetail.GenerateSpecificTopicDetail(block);
             int errorTime = 0;
             string firstPage = "http://www.ihchina.cn/news_1/p/1.html";
-            var lastPageNumber = WebpageHelper.GetPageLastIndex(firstPage);
+            var lastPageNumber = DebugHelperTools.IsDebugMode()?2:WebpageHelper.GetPageLastIndex(firstPage);
             for (int i = 1; i < lastPageNumber && errorTime < 10; i++)
             {
                 var listUrl = String.Format("http://www.ihchina.cn/news_1/p/{0}.html", i);

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using HeritageWebserviceReptileDotNetCore.Reptile;
+using HeritageWebserviceReptileDotNetCore.DebugHelper;
 
 namespace HeritageWebserviceDotNetCore.Reptile
 {
@@ -25,7 +26,8 @@ namespace HeritageWebserviceDotNetCore.Reptile
            BufferBlock<string> newsDetailTargetBlock = new BufferBlock<string>();
            int errorTime = 0;
             var newsDetailPageGenerate = GetNewsDetail.GenerateNewsDetail(newsDetailTargetBlock);
-            for (int page = 1; page < 255; page++)
+            int pageNumber = DebugHelperTools.IsDebugMode() ? 2 : 255;
+            for (int page = 1; page < pageNumber; page++)
             {
                 if (errorTime > 10)
                 {

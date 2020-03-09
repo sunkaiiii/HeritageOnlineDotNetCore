@@ -42,12 +42,12 @@ namespace HeritageWebServiceDotNetCore.Service
             //输入的筛选条件可能是不全的
             //如果简单的使用扩展方法ToBson，或出现筛选字段为null，会没有结果
             //过滤掉所有为null的字段，将其转换为BsonDocument
-            foreach (var filedName in typeof(HeritageProject).GetFields())
+            foreach (var filedName in typeof(HeritageProject).GetProperties())
             {
                 var filedValue = filedName.GetValue(filter);
                 if(filedValue != null) 
                 {
-                    filterBson.Add(filedName.Name, filedValue.ToString());
+                    filterBson.Add(filedName.Name.ToLower(), filedValue.ToString());
                 }
             }
             return GetFilterSearchProjectList(filterBson, pages);
@@ -60,25 +60,26 @@ namespace HeritageWebServiceDotNetCore.Service
             {
                 return null;
             }
-            return _heritageProject.Find(filter).Skip(20 * (pages - 1)).Limit(20).ToList();
+            var result = _heritageProject.Find(filter).Skip(20 * (pages - 1)).Limit(20).ToList();
+            return result;
         }
 
-        public HeritageProjectDetail GetProjectDetail(string link) => _heritageProjectDetail.Find(detail => detail.link == link).FirstOrDefault();
+        public HeritageProjectDetail GetProjectDetail(string link) => _heritageProjectDetail.Find(detail => detail.Link == link).FirstOrDefault();
 
         private class SearchFilter
         {
-            public string num;
-            public string type;
-            public string rx_time;
-            public string cate;
-            public string province;
-            public string unit;
+            public string Num { get; set; }
+            public string Type { get; set; }
+            public string Rx_time { set; get; }
+            public string Cate { get; set; }
+            public string Province { get; set; }
+            public string Unit { get; set; }
         }
         public Dictionary<string,HashSet<string>> GetAllCategories()
         {
             var result = _heritageProject.Find(n => true).ToList();
             var dic = new Dictionary<string, HashSet<string>>();
-            var returnTypes = typeof(SearchFilter).GetFields();
+            var returnTypes = typeof(SearchFilter).GetProperties();
             foreach(var type in returnTypes)
             {
                 dic.Add(type.Name, new HashSet<string>());
@@ -87,10 +88,10 @@ namespace HeritageWebServiceDotNetCore.Service
             {
                 foreach(var type in returnTypes)
                 {
-                    var value = project.GetType().GetField(type.Name).GetValue(project);
+                    var value = project.GetType().GetProperty(type.Name).GetValue(project);
                     if(value !=null)
                     {
-                            dic[type.Name].Add(value.ToString());
+                            dic[type.Name.ToLower()].Add(value.ToString());
                     }
                     
                 }
@@ -100,7 +101,7 @@ namespace HeritageWebServiceDotNetCore.Service
 
         public HeritageInheritatePeople GetInheritatePeople(string link)
         {
-            return _heritageInheritatePeople.Find(people => people.link.Equals(link)).SingleOrDefault();
+            return _heritageInheritatePeople.Find(people => people.Link.Equals(link)).SingleOrDefault();
         }
     }
 }

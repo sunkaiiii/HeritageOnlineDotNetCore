@@ -6,6 +6,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using HeritageWebserviceDotNetCore.Reptile;
+using HeritageWebserviceReptileDotNetCore.DebugHelper;
 using HeritageWebserviceReptileDotNetCore.Reptile;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -19,21 +20,24 @@ namespace HeritageWebService
     {
         public static void Main(string[] args)
         {
-            Task.Run(async ()=>
-            {
-                await GetIhChina.StartReptile();
-            });
-            System.Timers.Timer timer = new System.Timers.Timer();
-            timer.Enabled = true;
-            timer.Interval = TimeSpan.FromDays(1).TotalMilliseconds;
-            timer.Start();
-            timer.Elapsed += (o, e) =>
+            if(!DebugHelperTools.IsDebugMode())
             {
                 Task.Run(async () =>
                 {
                     await GetIhChina.StartReptile();
                 });
-            };
+                System.Timers.Timer timer = new System.Timers.Timer();
+                timer.Enabled = true;
+                timer.Interval = TimeSpan.FromDays(1).TotalMilliseconds;
+                timer.Start();
+                timer.Elapsed += (o, e) =>
+                {
+                    Task.Run(async () =>
+                    {
+                        await GetIhChina.StartReptile();
+                    });
+                };
+            }
             CreateWebHostBuilder(args).Build().Run();
         }
 

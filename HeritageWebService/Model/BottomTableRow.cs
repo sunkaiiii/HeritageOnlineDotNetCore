@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,12 +8,16 @@ namespace HeritageWebServiceDotNetCore.Model
 {
     public class BottomTableRow
     {
-        public string link;
-        public List<TableContent> content;
+        [BsonElement("link")]
+        public string Link { get; set; }
+        [BsonElement("content")]
+        public List<TableContent> Content { get; set; }
         public class TableContent
         {
-            public string key;
-            public string value;
+            [BsonElement("key")]
+            public string Key;
+            [BsonElement("value")]
+            public string Value;
         }
     }
 }

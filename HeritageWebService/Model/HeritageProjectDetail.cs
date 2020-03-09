@@ -11,12 +11,17 @@ namespace HeritageWebServiceDotNetCore.Model
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string Id { get; set; }
-
-        public string title;
-        public string link;
-        public string text;
-        public List<string> desc;
-        public List<BottomTableRow> inheritate;
-        public List<BottomTableRow> ralevant;
+        [BsonElement("title")]
+        public string Title { get; set; }
+        [BsonElement("link")]
+        public string Link { get; set; }
+        [BsonElement("text")]
+        public string Text { get; set; }
+        [BsonElement("desc")]
+        public List<string> Desc { get; set; }
+        [BsonElement("inheritate")]
+        public List<BottomTableRow> Inheritate { get; set; }
+        [BsonElement("ralevant")]
+        public List<BottomTableRow> Ralevant { get; set; }
     }
 }

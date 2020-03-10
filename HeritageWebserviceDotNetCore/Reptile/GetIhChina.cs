@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using HeritageWebserviceDotNetCore.Mongodb;
 using HeritageWebserviceDotNetCore.Reptile;
 using HtmlAgilityPack;
@@ -23,7 +24,7 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
         {
             var imageTargetBlock = WebImageSaver.Instance.ImageTargetBlock; //初始化图片序列
             var imageSaverTask = WebImageSaver.Instance.SaveFileAsync(imageTargetBlock);
-            GetBanner();
+            GetBanner(imageTargetBlock);
             var result = GetNewsListWorker.GetNewsList(imageSaverTask, imageTargetBlock); //仅用一个线程去获取新闻内容，
             Console.WriteLine("Get news list returns {0}, task is over", await result);
             GetForumsWorker.GetForumsList();
@@ -35,23 +36,32 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
             Console.WriteLine("Image downloading has been finished");
         }
 
-        private static void GetBanner()
+        private static void GetBanner(BufferBlock<string> imageTargetBlock)
         {
             var doc = WebpageHelper.GetHttpRequestDocument(MainPage);
             var nodes = from links in doc.DocumentNode.Descendants()
-                where
-                    links.Name == "a"
-                    && links.Attributes["href"] != null
-                    && links.Attributes["class"] != null
-                    && links.Attributes["class"].Value.Equals("slick-link p-show")
-                    && !MongodbChecker.CheckMainNewsList(links.Attributes["href"].Value)
-                select new BsonDocument()
-                    .Add("link", links.Attributes["href"].Value)
-                    .Add("img",
-                        links.Attributes["style"].Value.Substring(
-                            links.Attributes["style"].Value.IndexOf("/", StringComparison.Ordinal),
-                            links.Attributes["style"].Value.LastIndexOf(")", StringComparison.Ordinal) -
-                            links.Attributes["style"].Value.IndexOf("/", StringComparison.Ordinal)));
+                        where
+                            links.Name == "a"
+                            && links.Attributes["href"] != null
+                            && links.Attributes["class"] != null
+                            && links.Attributes["class"].Value.Equals("slick-link p-show")
+                            && !MongodbChecker.CheckMainNewsList(links.Attributes["href"].Value)
+                        select new BsonDocument()
+                            .Add("link", links.Attributes["href"].Value)
+                            .Add("img",WebpageHelper.GetSubUrl(
+                               links.Attributes["style"].Value.Substring(
+                                    links.Attributes["style"].Value.IndexOf("/", StringComparison.Ordinal),
+                                    links.Attributes["style"].Value.LastIndexOf(")", StringComparison.Ordinal) -
+                                    links.Attributes["style"].Value.IndexOf("/", StringComparison.Ordinal))))
+                            .Add("originImage", links.Attributes["style"].Value.Substring(
+                                    links.Attributes["style"].Value.IndexOf("/", StringComparison.Ordinal),
+                                    links.Attributes["style"].Value.LastIndexOf(")", StringComparison.Ordinal) -
+                                    links.Attributes["style"].Value.IndexOf("/", StringComparison.Ordinal)));
+            foreach (var node in nodes)
+            {
+                imageTargetBlock.Post(node["originImage"].AsBsonValue.ToString());
+            }
+
             var enumerable = nodes as BsonDocument[] ?? nodes.ToArray();
             if (!enumerable.Any()) return;
             MongodbSaver.SaveMainpageNewsList(nodes);

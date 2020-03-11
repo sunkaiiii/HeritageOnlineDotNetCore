@@ -23,6 +23,8 @@ namespace HeritageWebServiceDotNetCore.Model
         public string HeritageProjectInheritatePeople { get; set; }
         public string ForumsList { get; set; }
         public string ForumsDetail { get; set; }
+        public string SpecialTopic { get; set; }
+        public string SpecialTopicDetail { get; set; }
     }
     public interface IHeritageMongodbSettings
     {

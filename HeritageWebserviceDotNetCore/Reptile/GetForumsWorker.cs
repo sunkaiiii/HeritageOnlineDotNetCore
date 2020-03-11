@@ -44,7 +44,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     }
                     if (bson != null)
                     {
-                        var link = bson.GetElement("link").ToString();
+                        var link = bson.GetElement("link").Value.ToString();
                         block.Post(link);
                         result.Add(bson);
                     }

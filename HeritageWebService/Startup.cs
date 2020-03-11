@@ -41,6 +41,7 @@ namespace HeritageWebService
             services.AddSingleton<NewsDetailService>();
             services.AddSingleton<NewsListService>();
             services.AddSingleton<HeritageProjectServicecs>();
+            services.AddSingleton<ForumsService>();
 
             //将Swagger生成器添加到方法中的服务集合中
             services.AddSwaggerGen(c =>

@@ -7,6 +7,7 @@ using System.Threading.Tasks.Dataflow;
 using HeritageWebserviceDotNetCore.Mongodb;
 using HeritageWebserviceDotNetCore.Reptile;
 using HeritageWebserviceReptileDotNetCore.Mongodb;
+using HtmlAgilityPack;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using Newtonsoft.Json;
@@ -17,7 +18,7 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
     {
         private static readonly string PROJECT_MAIN_PAGE = "http://www.ihchina.cn/project.html";
         private static readonly string REQUEST_URL = "http://www.ihchina.cn/Article/Index/getProject.html?province=&rx_time=&type=&cate=&keywords=&category_id=16&limit=10&p={0}";
-
+        private static readonly string MAIN_PAGE = "http://www.ihchina.cn/";
         struct HeritageProjectRequest
         {
             public int More { get; set; }
@@ -53,14 +54,20 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
 
         public static void GetHeritageProject()
         {
+            GetMainPageInformation();
+            GetAllProjectList();
+        }
+
+        private static void GetMainPageInformation()
+        {
             var doc = WebpageHelper.GetHttpRequestDocument(PROJECT_MAIN_PAGE);
             var nodes = doc.DocumentNode.SelectNodes("//div[@class='x-wrap']/div[@class='title']/div");
-            if(nodes!=null)
+            if (nodes != null)
             {
                 var bson = new BsonDocument();
-                foreach(var node in nodes)
+                foreach (var node in nodes)
                 {
-                    switch(node.Attributes["class"].Value)
+                    switch (node.Attributes["class"].Value)
                     {
                         case "h30":
                             bson.Add("title", node.InnerText);
@@ -77,11 +84,12 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                     }
                 }
 
+                //非遗页面的数字
                 nodes = doc.DocumentNode.SelectNodes("//div/div[@class='num-item']");
-                if(nodes != null)
+                if (nodes != null)
                 {
                     var bsonArray = new BsonArray();
-                    foreach(var node in nodes)
+                    foreach (var node in nodes)
                     {
                         var numBson = new BsonDocument();
                         foreach (var childNode in node.ChildNodes)
@@ -102,13 +110,16 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                     bson.Add("numItem", bsonArray);
                 }
 
+                //获取首页的非物质文化遗产地图
+                GetHeritageMapTableInformation(bson);
+
                 var mongodbBson = MongodbGetter.GetHeritageProjectMainPageDesc();
-                if(mongodbBson==null)
+                if (mongodbBson == null)
                 {
                     Console.WriteLine("Insert Heritage Project Content");
                     MongodbSaver.SaveHeritageProjectMainContent(bson);
                 }
-                else if(!CheckBsonIsEqual(bson,mongodbBson))
+                else if (!CheckBsonIsEqual(bson, mongodbBson))
                 {
                     Console.WriteLine("Update Heritage Project Content");
                     MongodbUpdater.UpdateHeritageProjectMainContent(bson);
@@ -118,8 +129,97 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                     Console.WriteLine("Not Insert Heritage Project Content");
                 }
                 Console.WriteLine(bson);
-                GetAllProjectList();
             }
+        }
+
+        public static void GetHeritageMapTableInformation(BsonDocument bson)
+        {
+            var doc = WebpageHelper.GetHttpRequestDocument(MAIN_PAGE);
+            var nodes = doc.DocumentNode.SelectNodes("//div[@class='tab-cont map_num']/div");
+            if (nodes != null)
+            {
+                var tableArray = new BsonArray();
+                for (int i = 0; i < 2; i++)
+                {
+                    var tableInfo = new BsonDocument();
+                    string name;
+                    switch (i)
+                    {
+                        case 0:
+                            name = "国家级代表项目";
+                            break;
+                        case 1:
+                            name = "国家级代表性传承人";
+                            break;
+                        default:
+                            name = "";
+                            break;
+                    }
+                    var node = nodes[i];
+                    BsonDocument tableInforamtionNode = GetMapInformation(node);
+                    if (tableInforamtionNode != null && tableInforamtionNode.ElementCount > 0)
+                    {
+                        tableInfo.Add("desc", name);
+                        tableInfo.Add("content", tableInforamtionNode);
+                        tableArray.Add(tableInfo);
+                    }
+                }
+                bson.Add("mapTables", tableArray);
+            }
+        }
+
+        private static BsonDocument GetMapInformation(HtmlNode node)
+        {
+            var mapInformationBson = new BsonDocument();
+            var descNodes = node.SelectNodes(".//div[@class='p_mor']"); //描述信息
+            if (descNodes != null)
+            {
+                var descBsons = new BsonArray();
+                foreach (var desc in descNodes)
+                {
+                    descBsons.Add(desc.InnerText);
+                }
+                mapInformationBson.Add("desc", descBsons);
+            }
+            //表格
+            var tableNodes = node.SelectNodes(".//div[@class='table']/div[@class='td']");
+            if(tableNodes==null)
+            {
+                tableNodes = node.SelectNodes(".//div[@class='table']/div[@class='td ']"); //网站两个表格的class名字不一样……
+            }
+            if(tableNodes!=null)
+            {
+                var tableBsons = new BsonArray();
+                foreach(var td in tableNodes)
+                {
+                    var tdBson = new BsonDocument();
+                    var linkNode = td.SelectSingleNode(".//a");
+                    var numNode = linkNode.SelectSingleNode(".//div[@class='num']");
+                    var descNode = linkNode.SelectSingleNode(".//div[@class='p']");
+                    if(numNode!=null&&descNode!=null)
+                    {
+                        tdBson.Add("num", numNode.InnerText);
+                        tdBson.Add("desc", descNode.InnerText);
+                    }
+                    var link = linkNode.Attributes["href"].Value;
+                    var searchLink = link.Substring(link.IndexOf('?'));
+                    if(searchLink.IndexOf('#')>0)
+                    {
+                        searchLink = searchLink.Remove(searchLink.IndexOf('#'));
+                    }
+                    tdBson.Add("searchLink", searchLink);
+                    tableBsons.Add(tdBson);
+                }
+                mapInformationBson.Add("table", tableBsons);
+            }
+
+            //总计
+            var total = node.SelectSingleNode(".//div[@class='total']");
+            if(total!=null)
+            {
+                mapInformationBson.Add("total", total.InnerText);
+            }
+            return mapInformationBson;
         }
 
         private static void GetAllProjectList()
@@ -198,16 +298,8 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
 
         private static bool CheckBsonIsEqual(BsonDocument bson, BsonDocument mongodbBson)
         {
-            var bsonArray = bson.GetElement("numItem").Value;
-            var mongodbArray = mongodbBson.GetElement("numItem").Value;
-            if(bsonArray.IsBsonArray && mongodbArray.IsBsonArray)
-            {
-                return bsonArray.Equals(mongodbArray);
-            }
-            else
-            {
-                return false;
-            }
+            mongodbBson.Remove("_id");
+            return mongodbBson.Equals(bson);
         }
     }
 }

@@ -12,9 +12,15 @@ namespace HeritageWebserviceDotNetCore.Reptile
         public static void SaveHtml(string url, HtmlAgilityPack.HtmlDocument doc)
         {
             var saveFileName = GetCacheFileName(url);
-            using (StreamWriter file = new StreamWriter(saveFileName))
+            try
             {
-                doc.Save(file);
+                using (StreamWriter file = new StreamWriter(saveFileName))
+                {
+                    doc.Save(file);
+                }
+            }catch(Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
 

@@ -25,6 +25,7 @@ namespace HeritageWebServiceDotNetCore.Model
         public string ForumsDetail { get; set; }
         public string SpecialTopic { get; set; }
         public string SpecialTopicDetail { get; set; }
+        public string PeopleMainPage { get; set; }
     }
     public interface IHeritageMongodbSettings
     {

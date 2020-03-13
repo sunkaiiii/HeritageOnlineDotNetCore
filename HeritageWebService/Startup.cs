@@ -37,17 +37,19 @@ namespace HeritageWebService
             services.Configure<HeritageMongodbSettings>(Configuration.GetSection(nameof(HeritageMongodbSettings)));//将appsetings.json当中的属性进行依赖填充
             services.AddSingleton<IHeritageMongodbSettings>(sp => sp.GetRequiredService<IOptions<HeritageMongodbSettings>>().Value); //接口的单一实例以单例在服务生存期DI中注册
             //向DI注册了HeritageService的类，以支持消费类中的构造函数注入。单例存在于整个服务周期是最合适的。 根据官方 Mongo Client 重用准则，应使用单一实例服务生存期在 DI 中注册 MongoClient。
-            services.AddSingleton<BannerService>(); 
+            services.AddSingleton<BannerService>();
             services.AddSingleton<NewsDetailService>();
             services.AddSingleton<NewsListService>();
             services.AddSingleton<HeritageProjectServicecs>();
             services.AddSingleton<ForumsService>();
             services.AddSingleton<SpecialTopicService>();
+            services.AddSingleton<PeoplePageService>();
 
             //将Swagger生成器添加到方法中的服务集合中
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
                     Version = "v1",
                     Title = "APIs",
                     Description = "A Heritage WebService ASP.NET Core Web API",
@@ -65,9 +67,10 @@ namespace HeritageWebService
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             //为所有的请求添加拦截器
-            services.AddMvc(options => {
+            services.AddMvc(options =>
+            {
                 options.Filters.Add<BaseInformationFilter>();
-                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -105,7 +108,7 @@ namespace HeritageWebService
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
-            app.UseEndpoints(endpoints=>endpoints.MapControllers());
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
 }

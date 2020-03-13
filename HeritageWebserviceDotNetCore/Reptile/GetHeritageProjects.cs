@@ -183,27 +183,27 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
             }
             //表格
             var tableNodes = node.SelectNodes(".//div[@class='table']/div[@class='td']");
-            if(tableNodes==null)
+            if (tableNodes == null)
             {
                 tableNodes = node.SelectNodes(".//div[@class='table']/div[@class='td ']"); //网站两个表格的class名字不一样……
             }
-            if(tableNodes!=null)
+            if (tableNodes != null)
             {
                 var tableBsons = new BsonArray();
-                foreach(var td in tableNodes)
+                foreach (var td in tableNodes)
                 {
                     var tdBson = new BsonDocument();
                     var linkNode = td.SelectSingleNode(".//a");
                     var numNode = linkNode.SelectSingleNode(".//div[@class='num']");
                     var descNode = linkNode.SelectSingleNode(".//div[@class='p']");
-                    if(numNode!=null&&descNode!=null)
+                    if (numNode != null && descNode != null)
                     {
                         tdBson.Add("num", numNode.InnerText);
                         tdBson.Add("desc", descNode.InnerText);
                     }
                     var link = linkNode.Attributes["href"].Value;
                     var searchLink = link.Substring(link.IndexOf('?'));
-                    if(searchLink.IndexOf('#')>0)
+                    if (searchLink.IndexOf('#') > 0)
                     {
                         searchLink = searchLink.Remove(searchLink.IndexOf('#'));
                     }
@@ -215,7 +215,7 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
 
             //总计
             var total = node.SelectSingleNode(".//div[@class='total']");
-            if(total!=null)
+            if (total != null)
             {
                 mapInformationBson.Add("total", total.InnerText);
             }
@@ -225,52 +225,52 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
         private static void GetAllProjectList()
         {
             short errorTime = 0;
-            var totalPages = DebugHelper.DebugHelperTools.IsDebugMode()?2:10;
+            var totalPages = DebugHelper.DebugHelperTools.IsDebugMode() ? 2 : 10;
             var block = new BufferBlock<string>();
             var task = GetHeritageProjectDetailWorker.GenerateProjectDetailPage(block);
-            for (int i=1;i<totalPages;i++)
+            for (int i = 1; i < totalPages; i++)
             {
-                if(errorTime>10)
+                if (errorTime > 10)
                 {
                     Console.WriteLine("GetAllProjectList: reach the limitation of error time");
                     break;
                 }
                 var currentPage = String.Format(REQUEST_URL, i);
-                Console.WriteLine("Starting process: "+currentPage);
+                Console.WriteLine("Starting process: " + currentPage);
                 var requestResult = WebpageHelper.GetRequest(currentPage);
-                if(string.IsNullOrEmpty(requestResult))
+                if (string.IsNullOrEmpty(requestResult))
                 {
                     errorTime++;
                     continue;
                 }
                 var jsonObject = JsonConvert.DeserializeObject<HeritageProjectRequest>(requestResult);
-                if(jsonObject.Links.Total_pages!=0
-                    &&jsonObject.Links.Total_pages!=totalPages
-                    &&!DebugHelper.DebugHelperTools.IsDebugMode())
+                if (jsonObject.Links.Total_pages != 0
+                    && jsonObject.Links.Total_pages != totalPages
+                    && !DebugHelper.DebugHelperTools.IsDebugMode())
                 {
                     totalPages = jsonObject.Links.Total_pages;
                 }
                 var list = jsonObject.List;
-                if(list==null || list.Length==0)
+                if (list == null || list.Length == 0)
                 {
                     continue;
                 }
                 var bsonArray = new List<BsonDocument>();
                 var heritageType = typeof(HeritageProject);
                 var properties = typeof(HeritageProject).GetProperties();
-                for (int j=0;j<list.Length;j++)
+                for (int j = 0; j < list.Length; j++)
                 {
-                    var bsonDocument= new BsonDocument();
-                    list[j].Link= "/project_details/" + list[j].Id;
-                    foreach(var property in properties)
+                    var bsonDocument = new BsonDocument();
+                    list[j].Link = "/project_details/" + list[j].Id;
+                    foreach (var property in properties)
                     {
                         //反射获取HeritageProject所有属性
                         //以属性名作为MongoDB存储的Key值
                         //反射获取对应List当中的值
-                        bsonDocument.Add(property.Name.ToLower(), Regex.Replace(heritageType.GetProperty(property.Name).GetValue(list[j]).ToString(),"<.*?>",string.Empty));
+                        bsonDocument.Add(property.Name.ToLower(), Regex.Replace(heritageType.GetProperty(property.Name).GetValue(list[j]).ToString(), "<.*?>", string.Empty));
                     }
 
-                    if(MongodbChecker.CheckHeritageProjectExist(list[j].Link))
+                    if (MongodbChecker.CheckHeritageProjectExist(list[j].Link))
                     {
                         Console.WriteLine("Duplicated Heritage Project Link: {0}", list[j].Link);
                         errorTime++;
@@ -280,13 +280,13 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                     bsonArray.Add(bsonDocument);
                 }
 
-                
-                if(bsonArray.Count!=0)
+
+                if (bsonArray.Count != 0)
                 {
                     MongodbSaver.SaveHeritageProjectNewsList(bsonArray);
                 }
-                
-                if (jsonObject.More!=1)
+
+                if (jsonObject.More != 1)
                 {
                     Console.WriteLine("GetAllProjectList: current page is {0}, more equals 0", i);
                     break;

@@ -7,13 +7,13 @@ namespace HeritageWebserviceDotNetCore.Mongodb
 {
     public static class MongodbSaver
     {
-        private static void InsertMany(IEnumerable<BsonDocument> bsons, string collectionName)
+        public static void InsertMany(IEnumerable<BsonDocument> bsons, string collectionName)
         {
             var collection = MongodbMain.GetCollection(collectionName);
             collection.InsertMany(bsons);
         }
 
-        private static void InsertOne(BsonDocument bson, string collectionName)
+        public static void InsertOne(BsonDocument bson, string collectionName)
         {
             if (bson == null || bson.ElementCount == 0)
                 return;

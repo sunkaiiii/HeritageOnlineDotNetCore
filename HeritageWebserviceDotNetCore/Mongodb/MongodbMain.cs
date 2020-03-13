@@ -5,22 +5,23 @@ using System.Collections.Generic;
 
 namespace HeritageWebserviceDotNetCore.Mongodb
 {
-    internal sealed class MongodbMain
+    public sealed class MongodbMain
     {
         private static readonly Lazy<MongodbMain> lazy = new Lazy<MongodbMain>(() => new MongodbMain());
         public static MongodbMain Instance { get { return lazy.Value; } }
 
-        internal const string Banner = "banner";
-        internal const string NewsList = "news_list";
-        internal const string NewsDetail = "news_detail";
-        internal const string ForumsList = "forums_list";
-        internal const string ForumsDetail = "forums_detail";
-        internal const string SpecificTopic = "specific_topic";
-        internal const string SpecificTopicDetail = "specific_topic_detail";
-        internal const string HeritageProjectMainPage = "heritage_project_main_page";
-        internal const string HeritageProject = "heritage_project";
-        internal const string HeritageProjectDetail = "heritage_project_detail";
-        internal const string HeirtageInheritatePeople = "heritage_inheritate_people";
+        public const string Banner = "banner";
+        public const string NewsList = "news_list";
+        public const string NewsDetail = "news_detail";
+        public const string ForumsList = "forums_list";
+        public const string ForumsDetail = "forums_detail";
+        public const string SpecificTopic = "specific_topic";
+        public const string SpecificTopicDetail = "specific_topic_detail";
+        public const string HeritageProjectMainPage = "heritage_project_main_page";
+        public const string HeritageProject = "heritage_project";
+        public const string HeritageProjectDetail = "heritage_project_detail";
+        public const string HeirtageInheritatePeople = "heritage_inheritate_people";
+        public const string PeopleMainPage = "people_main_page";
 
         internal Dictionary<string, MongoDB.Driver.IMongoCollection<BsonDocument>> COLLECTIONS;
         internal readonly IMongoDatabase database;
@@ -41,14 +42,15 @@ namespace HeritageWebserviceDotNetCore.Mongodb
                 HeritageProjectMainPage,
                 HeritageProject,
                 HeritageProjectDetail,
-                HeirtageInheritatePeople
+                HeirtageInheritatePeople,
+                PeopleMainPage
             };
             COLLECTIONS = new Dictionary<string, IMongoCollection<BsonDocument>>();
             foreach (var collectionName in collectionString)
             {
                 COLLECTIONS[collectionName] = database.GetCollection<BsonDocument>(collectionName);
             }
-  
+
         }
 
         public static IMongoCollection<BsonDocument> GetCollection(string collectionName)
@@ -58,7 +60,7 @@ namespace HeritageWebserviceDotNetCore.Mongodb
 
         ~MongodbMain()
         {
-          
+
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using HeritageWebserviceReptileDotNetCore.Reptile;
+﻿using HeritageWebserviceDotNetCore.Mongodb;
+using HeritageWebserviceReptileDotNetCore.Mongodb;
+using HeritageWebserviceReptileDotNetCore.Reptile;
 using MongoDB.Bson;
 using NUnit.Framework;
 using System;
@@ -11,7 +13,7 @@ namespace HeritageWebserviceRetileDotNetCore.Tests
     {
         [SetUp]
         public void Setup()
-        { 
+        {
         }
 
         [Test]
@@ -22,6 +24,15 @@ namespace HeritageWebserviceRetileDotNetCore.Tests
             Console.WriteLine(bson);
             Assert.IsTrue(bson.ElementCount > 0);
             Assert.IsTrue(((bson.GetElement(0).Value) as BsonArray).Count == 2);
+        }
+
+        [Test]
+        public void TestGetPeoplePage()
+        {
+            GetPeoplePage.StartGetPeoplePage();
+            var bson = MongodbGetter.GetACollection(MongodbMain.PeopleMainPage);
+            Assert.IsNotNull(bson);
+            Assert.IsTrue(bson.ElementCount > 0);
         }
     }
 }

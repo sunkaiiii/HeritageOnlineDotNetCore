@@ -3,6 +3,8 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks.Dataflow;
+using HeritageWebserviceDotNetCore.Mongodb;
+using HeritageWebserviceReptileDotNetCore.Mongodb;
 using HeritageWebserviceReptileDotNetCore.Reptile;
 using HtmlAgilityPack;
 using MongoDB.Bson;
@@ -11,13 +13,13 @@ namespace HeritageWebserviceDotNetCore.Reptile
 {
     public static class WebpageHelper
     {
-        private  static HtmlWeb htmlWeb=new HtmlWeb();
+        private static HtmlWeb htmlWeb = new HtmlWeb();
         public static string GetSubUrl(string url)
         {
             var result = url;
             if (url.Contains(@"/"))
             {
-                result = url.Substring(url.LastIndexOf(@"/")+1);
+                result = url.Substring(url.LastIndexOf(@"/") + 1);
             }
             StringBuilder urlBuilder = new StringBuilder(result);
             foreach (char invalidChar in Path.GetInvalidFileNameChars())
@@ -43,7 +45,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
         public static string GetRequest(string url)
         {
 #if DEBUG
-            if(WebPageSaver.CheckCacheFileExist(url))
+            if (WebPageSaver.CheckCacheFileExist(url))
             {
                 return WebPageSaver.GetSimpleRequestResult(url);
             }
@@ -55,13 +57,14 @@ namespace HeritageWebserviceDotNetCore.Reptile
             {
                 var responseStream = request.GetResponse().GetResponseStream();
                 result = new StreamReader(responseStream).ReadToEnd().ToString();
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine(e);
                 return result;
             }
 #if DEBUG
-            WebPageSaver.SaveSimpleRequestResult(url,result);
+            WebPageSaver.SaveSimpleRequestResult(url, result);
 #endif
             return result;
         }
@@ -69,7 +72,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
         public static HtmlAgilityPack.HtmlDocument GetHttpRequestDocument(string url)
         {
 #if DEBUG
-            if(WebPageSaver.CheckCacheFileExist(url))
+            if (WebPageSaver.CheckCacheFileExist(url))
             {
                 return WebPageSaver.GetHtmlDocument(url);
             }
@@ -78,9 +81,9 @@ namespace HeritageWebserviceDotNetCore.Reptile
             HtmlDocument doc;
             try
             {
-                 doc = htmlWeb.Load(url); 
+                doc = htmlWeb.Load(url);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e);
                 return new HtmlDocument();
@@ -92,7 +95,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
         }
 
         public delegate bool Checker(string url);
-        public static BsonDocument AnalizeGeneralListInformation(HtmlAgilityPack.HtmlNode node,Checker checker)
+        public static BsonDocument AnalizeGeneralListInformation(HtmlAgilityPack.HtmlNode node, Checker checker)
         {
             var bson = new BsonDocument();
             var linkNode = node.SelectSingleNode(".//div[@class='h16']/a");
@@ -121,7 +124,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
             {
                 var imgUrl = imageNode.Attributes["src"].Value;
                 bson.Add("img", WebpageHelper.GetSubUrl(imgUrl));
-                WebImageSaver.Instance.ImageTargetBlock.Post(GetIhChina.MainPage+imgUrl);
+                WebImageSaver.Instance.ImageTargetBlock.Post(GetIhChina.MainPage + imgUrl);
             }
             Console.WriteLine(bson.ToString());
             return bson;
@@ -136,19 +139,44 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 return 100;
             }
             int lastIndex = 0;
-            foreach(var node in nodes)
+            foreach (var node in nodes)
             {
                 string indexString = node.InnerText;
                 int tempIndex;
-                if(int.TryParse(indexString, out tempIndex))
+                if (int.TryParse(indexString, out tempIndex))
                 {
-                    if(lastIndex<tempIndex)
+                    if (lastIndex < tempIndex)
                     {
                         lastIndex = tempIndex;
                     }
                 }
             }
             return lastIndex;
+        }
+
+        public static bool TryToInsertOrUpdateABson(BsonDocument bsonDocument, string collectionName) => TryToInsertOrUpdateABson(bsonDocument, collectionName, new BsonDocument());
+        public static bool TryToInsertOrUpdateABson(BsonDocument bsomDocument, string collectionName, BsonDocument condition)
+        {
+            var mongodbBson = MongodbGetter.GetACollection(collectionName);
+            if (mongodbBson == null)
+            {
+                MongodbSaver.InsertOne(bsomDocument, collectionName);
+                return true;
+            }
+            else if (!CheckBsonIsEqual(bsomDocument, mongodbBson))
+            {
+                MongodbUpdater.UpdateACollection(bsomDocument, collectionName, condition);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public static bool CheckBsonIsEqual(BsonDocument bson, BsonDocument mongodbBson)
+        {
+            mongodbBson.Remove("_id");
+            return mongodbBson.Equals(bson);
         }
     }
 }

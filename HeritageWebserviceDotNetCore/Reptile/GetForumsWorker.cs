@@ -19,7 +19,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
             var lastPageNumber = DebugHelperTools.IsDebugMode() ? 2 : WebpageHelper.GetPageLastIndex(firstPage);
             for (int i = 1; i < lastPageNumber && errorTime < 10; i++)
             {
-                var listUrl = String.Format("http://www.ihchina.cn/luntan/p/{0}.html", i);
+                var listUrl = string.Format("http://www.ihchina.cn/luntan/p/{0}.html", i);
                 Console.WriteLine("starting process page:{0}", listUrl);
                 var doc = WebpageHelper.GetHttpRequestDocument(listUrl);
                 var listNodes = doc.DocumentNode.SelectNodes("//div[@id='datalist']/div[@class='list-item']");

@@ -30,6 +30,7 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
             GetForumsWorker.GetForumsList();
             GetSpecialTopicWorker.GetSpecialTopic();
             GetHeritageProjects.GetHeritageProject();
+            await GetPeoplePage.StartGetPeoplePage();
             Console.WriteLine("All processes have been completed, now waiting for image downloading...");
             imageTargetBlock.Complete();
             Console.WriteLine("image task returns {0}, task is over", await imageSaverTask);

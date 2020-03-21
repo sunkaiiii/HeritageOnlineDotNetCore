@@ -123,7 +123,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
             if (imageNode != null)
             {
                 var imgUrl = imageNode.Attributes["src"].Value;
-                bson.Add("img", WebpageHelper.GetSubUrl(imgUrl));
+                bson.Add("img", GetSubUrl(imgUrl));
                 WebImageSaver.Instance.ImageTargetBlock.Post(GetIhChina.MainPage + imgUrl);
             }
             Console.WriteLine(bson.ToString());

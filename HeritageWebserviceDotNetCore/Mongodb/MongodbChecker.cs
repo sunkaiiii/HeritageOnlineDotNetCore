@@ -49,6 +49,8 @@ namespace HeritageWebserviceDotNetCore.Mongodb
             return checkLink(MongodbMain.SpecificTopicDetail, detailUrl);
         }
 
+        public static bool CheckPeopleDetailExist(string detailUrl) => checkLink(MongodbMain.PeopleDetail, detailUrl);
+
         internal static bool CheckHeritageProjectInheritatePeopleExist(string url)
         {
             return checkLink(MongodbMain.HeirtageInheritatePeople,url);
@@ -62,6 +64,11 @@ namespace HeritageWebserviceDotNetCore.Mongodb
         public static bool CheckHeritageProjectDetailExist(string detailUrl)
         {
             return checkLink(MongodbMain.HeritageProjectDetail, detailUrl);
+        }
+
+        public static bool CheckPeoplePageListExist(string url)
+        {
+            return checkLink(MongodbMain.PeopleList, url);
         }
     }
 }

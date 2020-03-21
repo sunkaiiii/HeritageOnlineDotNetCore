@@ -65,6 +65,8 @@ namespace HeritageWebserviceDotNetCore.Mongodb
             InsertOne(bson, MongodbMain.SpecificTopicDetail);
         }
 
+        public static void SavePeopleListInformation(List<BsonDocument> bsons) => InsertMany(bsons, MongodbMain.PeopleList);
+        public static void SavePeopleDetailInformation(BsonDocument bson) => InsertOne(bson, MongodbMain.PeopleDetail);
 
         public static void SaveHeritageProjectMainContent(BsonDocument bson)
         {

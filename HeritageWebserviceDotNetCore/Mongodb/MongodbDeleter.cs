@@ -14,7 +14,7 @@ namespace HeritageWebserviceDotNetCore.Mongodb
             {
                 return false;
             }
-            return MongodbMain.GetCollection(collectionName).FindOneAndDelete<BsonDocument>(bson) != null;
+            return MongodbMain.GetCollection(collectionName).DeleteMany(bson).DeletedCount>0;
         }
         public static bool DeleteNews(BsonDocument filter)
         {
@@ -35,5 +35,8 @@ namespace HeritageWebserviceDotNetCore.Mongodb
         {
             return Delete(filter, MongodbMain.HeritageProject);
         }
+
+        public static bool DeleteHeritagePeopleList(BsonDocument filter) => Delete(filter, MongodbMain.PeopleList);
+        public static bool DeleteHeritagePeopleDetail(BsonDocument filter) => Delete(filter, MongodbMain.PeopleDetail);
     }
 }

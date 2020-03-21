@@ -22,6 +22,8 @@ namespace HeritageWebserviceDotNetCore.Mongodb
         public const string HeritageProjectDetail = "heritage_project_detail";
         public const string HeirtageInheritatePeople = "heritage_inheritate_people";
         public const string PeopleMainPage = "people_main_page";
+        public const string PeopleList = "people_list";
+        public const string PeopleDetail = "people_detail";
 
         internal Dictionary<string, MongoDB.Driver.IMongoCollection<BsonDocument>> COLLECTIONS;
         internal readonly IMongoDatabase database;
@@ -43,7 +45,9 @@ namespace HeritageWebserviceDotNetCore.Mongodb
                 HeritageProject,
                 HeritageProjectDetail,
                 HeirtageInheritatePeople,
-                PeopleMainPage
+                PeopleMainPage,
+                PeopleList,
+                PeopleDetail
             };
             COLLECTIONS = new Dictionary<string, IMongoCollection<BsonDocument>>();
             foreach (var collectionName in collectionString)

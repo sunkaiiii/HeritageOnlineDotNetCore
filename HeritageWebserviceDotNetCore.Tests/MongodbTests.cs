@@ -34,72 +34,53 @@ namespace HeritageWebserviceDotNetCore.Tests
         }
 
 
-        private string GetTestLink()
-        {
-            return "/23456776543/345678765432/34567765432/56765432";
-        }
-
-        private string GetBTestLink()
-        {
-            return "/2432432/43242/3432/4/324";
-        }
-
-        [Test]
-        public void TestNewsListChecker()
-        {
-            var bson = CreateTestBson();
-            var insertList = new List<BsonDocument>();
-            insertList.Add(bson);
-            MongodbSaver.SaveNewsList(insertList);
-            var url1 = @"/news_details/18987.html";
-            var url2 = @"/news_details/184987.html";
-            var shouldBeTrue = MongodbChecker.CheckNewsExist(url1);
-            var shouldBeFalse = MongodbChecker.CheckNewsExist(url2);
-            Assert.IsTrue(shouldBeTrue);
-            Assert.IsFalse(shouldBeFalse);
-            var result = MongodbDeleter.DeleteNews(bson);
-            Assert.IsTrue(result);
-            Assert.False(MongodbDeleter.DeleteNews(CreateEmptyBson()));
-            shouldBeTrue = MongodbChecker.CheckNewsExist(url1);
-            Assert.IsTrue(shouldBeTrue);
-        }
-
-        [Test]
-        public void TestNewsDetailChecker()
-        {
-            var bson = CreateTestBson();
-            Assert.IsFalse(MongodbChecker.CheckForumsDetailExist(GetTestLink()));
-            MongodbSaver.SaveNewsDetail(bson);
-            Assert.IsTrue(MongodbDeleter.DeleteNewsDetail(bson));
-            Assert.False(MongodbDeleter.DeleteNewsDetail(CreateEmptyBson()));
-            Assert.IsFalse(MongodbChecker.CheckNewsDetailExist(GetTestLink()));
-        }
+        private string GetTestLink()=> "/23456776543/345678765432/34567765432/56765432";
+        private string GetBTestLink() => "/2432432/43242/3432/4/324";
 
         private void TestMongodbListCollection(Action<List<BsonDocument>> addAction,Func<BsonDocument,bool> deleteAction,Func<string,bool> checkAction)
         {
-            var bson = CreateTestBson();
-            var insertList = new List<BsonDocument>();
-            insertList.Add(bson);
+            var insertList = new List<BsonDocument>
+            {
+                CreateTestBson(),
+                CreateBTestBson()
+            };
             addAction(insertList);
             Assert.IsTrue(checkAction(GetTestLink()));
-            Assert.IsFalse(checkAction(GetBTestLink()));
-            Assert.IsTrue(deleteAction(bson));
+            Assert.IsTrue(checkAction(GetBTestLink()));
+            Assert.IsTrue(deleteAction(CreateTestBson()));
             Assert.IsFalse(deleteAction(CreateEmptyBson()));
-            Assert.IsFalse(deleteAction(CreateBTestBson()));
             Assert.IsFalse(checkAction(GetTestLink()));
+            Assert.IsTrue(deleteAction(CreateBTestBson()));
+            Assert.IsFalse(checkAction(GetBTestLink()));
+            Assert.IsFalse(deleteAction(CreateBTestBson()));
+        }
 
+        private void TestMongodbSingleDocument(Action<BsonDocument> addAction, Func<BsonDocument, bool> deleteAction, Func<string, bool> checkAction)
+        {
+            var bson = CreateTestBson();
+            Assert.IsFalse(checkAction(GetTestLink()));
+            addAction(bson);
+            Assert.IsTrue(checkAction(GetTestLink()));
+            Assert.IsTrue(deleteAction(bson));
+            Assert.IsFalse(checkAction(GetTestLink()));
         }
 
         [Test]
-        public void TestForumsChecker()
-        {
-            TestMongodbListCollection(MongodbSaver.SaveForumsList, MongodbDeleter.DeleteForumNews, MongodbChecker.CheckForumsListExist);
-        }
+        public void TestForumsChecker()=>TestMongodbListCollection(MongodbSaver.SaveForumsList, MongodbDeleter.DeleteForumNews, MongodbChecker.CheckForumsListExist);
 
         [Test]
-        public void TestHeritageProject()
-        {
-            TestMongodbListCollection(MongodbSaver.SaveHeritageProjectNewsList, MongodbDeleter.DeleteHeritageProject, MongodbChecker.CheckHeritageProjectExist);
-        }
+        public void TestHeritageProject()=>TestMongodbListCollection(MongodbSaver.SaveHeritageProjectNewsList, MongodbDeleter.DeleteHeritageProject, MongodbChecker.CheckHeritageProjectExist);
+        
+        [Test]
+        public void TestPeopleListPage()=> TestMongodbListCollection(MongodbSaver.SavePeopleListInformation, MongodbDeleter.DeleteHeritagePeopleList, MongodbChecker.CheckPeoplePageListExist);
+
+        [Test]
+        public void TestNewsListChecker() => TestMongodbListCollection(MongodbSaver.SaveNewsList, MongodbDeleter.DeleteNews, MongodbChecker.CheckNewsExist);
+
+        [Test]
+        public void TestNewsDetailChecker() => TestMongodbSingleDocument(MongodbSaver.SaveNewsDetail, MongodbDeleter.DeleteNewsDetail, MongodbChecker.CheckNewsDetailExist);
+
+        [Test]
+        public void TestPeopleDetailChecker() => TestMongodbSingleDocument(MongodbSaver.SavePeopleDetailInformation, MongodbDeleter.DeleteHeritagePeopleDetail, MongodbChecker.CheckPeopleDetailExist);
     }
 }

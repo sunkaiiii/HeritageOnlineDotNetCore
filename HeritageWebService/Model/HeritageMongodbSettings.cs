@@ -26,6 +26,8 @@ namespace HeritageWebServiceDotNetCore.Model
         public string SpecialTopic { get; set; }
         public string SpecialTopicDetail { get; set; }
         public string PeopleMainPage { get; set; }
+        public string PeopleList { get; set; }
+        public string PeopleDetail { get; set; }
     }
     public interface IHeritageMongodbSettings
     {

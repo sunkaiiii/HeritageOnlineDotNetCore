@@ -124,6 +124,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
             {
                 var imgUrl = imageNode.Attributes["src"].Value;
                 bson.Add("img", GetSubUrl(imgUrl));
+                bson.Add("compressImg", WebImageSaver.Instance.GetComressImageName(GetSubUrl(imgUrl)));
                 WebImageSaver.Instance.ImageTargetBlock.Post(GetIhChina.MainPage + imgUrl);
             }
             Console.WriteLine(bson.ToString());

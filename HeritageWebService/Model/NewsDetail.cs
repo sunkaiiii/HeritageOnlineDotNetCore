@@ -31,6 +31,8 @@ namespace HeritageWebServiceDotNetCore.Model
             public string Type { get; set; }
             [BsonElement("content")]
             public string Content { get; set; }
+            [BsonElement("compressImg")]
+            public string CompressImg { get; set; }
         }
 
         public class BottomRelativeNews

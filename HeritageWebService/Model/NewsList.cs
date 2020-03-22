@@ -21,5 +21,7 @@ namespace HeritageWebServiceDotNetCore.Model
         public string Date { get; set; }
         [BsonElement("content")]
         public string Content{get;set;}
+        [BsonElement("compressImg")]
+        public string CompressImg { get; set; }
     }
 }

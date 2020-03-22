@@ -69,7 +69,9 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     var imgNode = node.SelectSingleNode(".//img");
                     if (imgNode != null)
                     {
-                        newsBson.Add("img", WebpageHelper.GetSubUrl(imgNode.Attributes["src"].Value));
+                        var imgUrl = WebpageHelper.GetSubUrl(imgNode.Attributes["src"].Value);
+                        newsBson.Add("img", imgUrl);
+                        newsBson.Add("compressImg",WebImageSaver.Instance.GetComressImageName(imgUrl));
                         imageTargetBlock.Post(GetIhChina.MainPage + imgNode.Attributes["src"].Value);
                     }
                     var dataNode = node.SelectSingleNode(".//div[@class='date']/div");

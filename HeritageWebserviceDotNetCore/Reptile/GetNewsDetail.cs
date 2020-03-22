@@ -116,8 +116,10 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 var picNode = node.SelectSingleNode(".//img");
                 if (picNode != null)
                 {
+                    var imgUrl = WebpageHelper.GetSubUrl(picNode.Attributes["src"].Value);
                     lineDic["type"] = "img";
-                    lineDic["content"] = WebpageHelper.GetSubUrl(picNode.Attributes["src"].Value);
+                    lineDic["content"] = imgUrl;
+                    lineDic["compressImg"] = WebImageSaver.Instance.GetComressImageName(imgUrl);
                     imageBlock.Post(GetIhChina.MainPage + picNode.Attributes["src"].Value);
                 }
                 else

@@ -94,7 +94,8 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                         result.Add(bson);
                     }
                 }
-                MongodbSaver.SavePeopleListInformation(result);
+                if(result.Count>0)
+                    MongodbSaver.SavePeopleListInformation(result);
                 result.Clear();
             }
             block.Complete();

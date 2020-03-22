@@ -69,22 +69,21 @@ namespace HeritageWebserviceDotNetCore.Reptile
         //并且生成一个小图
         public void CorpImage(string savePath)
         {
-            const int boundWidth = 480;
-            const int boundHeight = 320;
+            const int bound = 800;
             using (Image image = Image.Load(savePath))
             {
                 Console.WriteLine(image.GetType().Name);
                 int resizeWidth = image.Width;
                 int resizeHeight = image.Height;
-                if (resizeHeight > boundHeight)
+                if ( image.Height>=image.Width&&resizeHeight > bound)
                 {
-                    double scale = (double)boundHeight / image.Height;
+                    double scale = (double)bound / image.Height;
                     resizeHeight = (int)(resizeHeight * scale);
                     resizeWidth = (int)(resizeWidth * scale);
                 }
-                if (resizeWidth > boundWidth)
+                else if (image.Width>image.Height &&  resizeWidth > bound)
                 {
-                    double scale = (double)boundWidth / image.Width;
+                    double scale = (double)bound / image.Width;
                     resizeWidth = (int)(resizeWidth * scale);
                     resizeHeight = (int)(resizeHeight * scale);
                 }

@@ -54,6 +54,11 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                                     links.Attributes["style"].Value.IndexOf("/", StringComparison.Ordinal),
                                     links.Attributes["style"].Value.LastIndexOf(")", StringComparison.Ordinal) -
                                     links.Attributes["style"].Value.IndexOf("/", StringComparison.Ordinal))))
+                            .Add("compressImg",WebImageSaver.Instance.GetComressImageName(WebpageHelper.GetSubUrl(
+                               links.Attributes["style"].Value.Substring(
+                                    links.Attributes["style"].Value.IndexOf("/", StringComparison.Ordinal),
+                                    links.Attributes["style"].Value.LastIndexOf(")", StringComparison.Ordinal) -
+                                    links.Attributes["style"].Value.IndexOf("/", StringComparison.Ordinal)))))
                             .Add("originImage", links.Attributes["style"].Value.Substring(
                                     links.Attributes["style"].Value.IndexOf("/", StringComparison.Ordinal),
                                     links.Attributes["style"].Value.LastIndexOf(")", StringComparison.Ordinal) -

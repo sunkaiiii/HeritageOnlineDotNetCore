@@ -21,5 +21,12 @@ namespace HeritageWebService.Model
         [BsonElement("img")]
         [Required]
         public string Img { get; set; }
+
+        [BsonElement("compressImg")]
+        public string CompressImg { get; set; }
+
+        [BsonElement("originImage")]
+        public string OriginImage { get; set; }
+
     }
 }

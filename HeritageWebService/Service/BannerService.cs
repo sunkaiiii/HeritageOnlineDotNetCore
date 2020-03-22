@@ -19,7 +19,7 @@ namespace HeritageWebServiceDotNetCore.Service
             _collections = settings.Collections;
         }
 
-        public List<Banner> Get() => _banner.Find(newsList => true).ToList();
+        public List<Banner> Get() => _banner.Find(newsList => true).Limit(7).ToList();
         public Banner Get(string id) => _banner.Find(newsList => newsList.Id == id).FirstOrDefault();
     }
 }

@@ -45,7 +45,7 @@ namespace HeritageWebServiceDotNetCore.Service
             foreach (var filedName in typeof(HeritageProject).GetProperties())
             {
                 var filedValue = filedName.GetValue(filter);
-                if(filedValue != null) 
+                if(filedValue != null && filedValue.ToString().Length>0) 
                 {
                     filterBson.Add(filedName.Name.ToLower(), filedValue.ToString());
                 }

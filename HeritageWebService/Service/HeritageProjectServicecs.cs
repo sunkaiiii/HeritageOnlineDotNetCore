@@ -47,7 +47,7 @@ namespace HeritageWebServiceDotNetCore.Service
                 var filedValue = filedName.GetValue(filter);
                 if(filedValue != null && filedValue.ToString().Length>0) 
                 {
-                    filterBson.Add(filedName.Name.ToLower(), filedValue.ToString());
+                    filterBson.Add(filedName.Name.ToLower(), new BsonDocument { { "$regex", filedValue.ToString() }, { "$options", "i" } });
                 }
             }
             return GetFilterSearchProjectList(filterBson, pages);

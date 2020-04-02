@@ -15,36 +15,35 @@ namespace HeritageWebserviceDotNetCore.Reptile
         public readonly static int PROCESS_SUCCESS = 0;
         private delegate bool Checker(string url);
         private delegate void Saver(BsonDocument bson);
-        public static async Task<int> GenerateNewsDetail(ISourceBlock<string> urlSource)
+        public static async Task<int> GenerateNewsDetail(ISourceBlock<string> urlSource, BufferBlock<string> block)
         {
             Checker checker = MongodbChecker.CheckNewsDetailExist;
             Saver saver = MongodbSaver.SaveNewsDetail;
-            return await processBufferBlock(urlSource, checker, saver);
+            return await processBufferBlock(urlSource, checker, saver,block);
         }
-        public static async Task<int> GenerateForumDetail(ISourceBlock<string> urlSource)
+        public static async Task<int> GenerateForumDetail(ISourceBlock<string> urlSource, BufferBlock<string> block)
         {
             Checker checker = MongodbChecker.CheckForumsDetailExist;
             Saver saver = MongodbSaver.SaveForumsDetail;
-            return await processBufferBlock(urlSource, checker, saver);
+            return await processBufferBlock(urlSource, checker, saver,block);
         }
 
-        internal static async Task<int> GenerateSpecificTopicDetail(ISourceBlock<string> urlSource)
+        internal static async Task<int> GenerateSpecificTopicDetail(ISourceBlock<string> urlSource, BufferBlock<string> block)
         {
             Checker checker = MongodbChecker.CheckSpecialListNewsDetailExist;
             Saver saver = MongodbSaver.SaveSpecificTopicDetail;
-            return await processBufferBlock(urlSource, checker, saver);
+            return await processBufferBlock(urlSource, checker, saver,block);
         }
 
-        internal static async Task<int> GeneratePeopleDetail(ISourceBlock<string> urlSource)
+        internal static async Task<int> GeneratePeopleDetail(ISourceBlock<string> urlSource, BufferBlock<string> block)
         {
             Checker checker = MongodbChecker.CheckPeopleDetailExist;
             Saver saver = MongodbSaver.SavePeopleDetailInformation;
-            return await processBufferBlock(urlSource, checker, saver);
+            return await processBufferBlock(urlSource, checker, saver,block);
         }
 
-        private static async Task<int> processBufferBlock(ISourceBlock<string> urlSource, Checker checker, Saver saver)
+        private static async Task<int> processBufferBlock(ISourceBlock<string> urlSource, Checker checker, Saver saver, BufferBlock<string> block)
         {
-            BufferBlock<string> block = WebImageSaver.Instance.ImageTargetBlock;
             var errorTime = 0;
             while (await urlSource.OutputAvailableAsync())
             {

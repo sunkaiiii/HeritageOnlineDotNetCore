@@ -22,15 +22,15 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
 
         public static async Task StartReptile()
         {
-            var imageTargetBlock = WebImageSaver.Instance.ImageTargetBlock; //初始化图片序列
+            var imageTargetBlock = WebImageSaver.Instance.InitImageBlock(); //初始化图片序列
             var imageSaverTask = WebImageSaver.Instance.SaveFileAsync(imageTargetBlock);
             GetBanner(imageTargetBlock);
             var result = GetNewsListWorker.GetNewsList(imageSaverTask, imageTargetBlock); //仅用一个线程去获取新闻内容，
             Console.WriteLine("Get news list returns {0}, task is over", await result);
-            GetForumsWorker.GetForumsList();
-            GetSpecialTopicWorker.GetSpecialTopic();
-            GetHeritageProjects.GetHeritageProject();
-            await GetPeoplePage.StartGetPeoplePage();
+            GetForumsWorker.GetForumsList(imageTargetBlock);
+            GetSpecialTopicWorker.GetSpecialTopic(imageTargetBlock);
+            GetHeritageProjects.GetHeritageProject(imageTargetBlock);
+            await GetPeoplePage.StartGetPeoplePage(imageTargetBlock);
             Console.WriteLine("All processes have been completed, now waiting for image downloading...");
             imageTargetBlock.Complete();
             Console.WriteLine("image task returns {0}, task is over", await imageSaverTask);

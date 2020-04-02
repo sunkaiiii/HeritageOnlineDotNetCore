@@ -10,10 +10,10 @@ namespace HeritageWebserviceDotNetCore.Reptile
 {
     class GetForumsWorker
     {
-        public static void GetForumsList()
+        public static void GetForumsList(BufferBlock<string> imageTargetBlock)
         {
             var block = new BufferBlock<string>();
-            var task = GetNewsDetail.GenerateForumDetail(block);
+            var task = GetNewsDetail.GenerateForumDetail(block,imageTargetBlock);
             int errorTime = 0;
             var firstPage = "http://www.ihchina.cn/luntan/p/1.html";
             var lastPageNumber = DebugHelperTools.IsDebugMode() ? 2 : WebpageHelper.GetPageLastIndex(firstPage);
@@ -35,7 +35,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                     {
                         break;
                     }
-                    var bson = WebpageHelper.AnalizeGeneralListInformation(node, MongodbChecker.CheckForumsListExist);
+                    var bson = WebpageHelper.AnalizeGeneralListInformation(node, MongodbChecker.CheckForumsListExist,imageTargetBlock);
                     if (bson == null)
                     {
                         errorTime++;

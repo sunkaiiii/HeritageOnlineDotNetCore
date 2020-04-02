@@ -14,12 +14,12 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
     {
         private static readonly string MAIN_PAGE = "http://www.ihchina.cn";
 
-        public static async Task StartGetPeoplePage()
+        public static async Task StartGetPeoplePage(BufferBlock<string> imageTargetBlock)
         {
-            GetPeopleMainPage();
-            await GetPeoplePageList();
+            GetPeopleMainPage(imageTargetBlock);
+            await GetPeoplePageList(imageTargetBlock);
         }
-        private static void GetPeopleMainPage()
+        private static void GetPeopleMainPage(BufferBlock<string> imageTargetBlock)
         {
             var doc = WebpageHelper.GetHttpRequestDocument(MAIN_PAGE);
             var bson = new BsonDocument();
@@ -41,7 +41,7 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                 var imageUrl = imageUrlWithAllText.Substring(imageUrlWithAllText.IndexOf("/"), imageUrlWithAllText.IndexOf(")") - imageUrlWithAllText.IndexOf("/"));
                 var imageDesc = contentNode.InnerText;
                 var link = linkNode.Attributes["href"].Value;
-                WebImageSaver.Instance.ImageTargetBlock.Post(imageUrl);
+                imageTargetBlock.Post(imageUrl);
                 tableBson.Add("img", WebpageHelper.GetSubUrl(imageUrl));
                 tableBson.Add("desc", imageDesc);
                 tableBson.Add("link", link);
@@ -55,10 +55,10 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                 Console.WriteLine("Duplicated information in people page");
         }
 
-        private static async Task GetPeoplePageList()
+        private static async Task GetPeoplePageList(BufferBlock<string> imageTargetBlock)
         {
             var block = new BufferBlock<string>();
-            var task = GetNewsDetail.GeneratePeopleDetail(block);
+            var task = GetNewsDetail.GeneratePeopleDetail(block,imageTargetBlock);
             int errorTime = 0;
             var firstPage = "http://www.ihchina.cn/character/p/1.html";
             var lastPageNumber = DebugHelperTools.IsDebugMode() ? 1 : WebpageHelper.GetPageLastIndex(firstPage);
@@ -80,7 +80,7 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
                     {
                         break;
                     }
-                    var bson = WebpageHelper.AnalizeGeneralListInformation(node, MongodbChecker.CheckPeoplePageListExist);
+                    var bson = WebpageHelper.AnalizeGeneralListInformation(node, MongodbChecker.CheckPeoplePageListExist, imageTargetBlock);
                     if(bson==null)
                     {
                         errorTime++;

@@ -9,10 +9,10 @@ namespace HeritageWebserviceDotNetCore.Reptile
 {
     public class GetSpecialTopicWorker
     {
-        public static void GetSpecialTopic()
+        public static void GetSpecialTopic(BufferBlock<string> imageTargetBlock)
         {
             var block = new BufferBlock<string>();
-            var task = GetNewsDetail.GenerateSpecificTopicDetail(block);
+            var task = GetNewsDetail.GenerateSpecificTopicDetail(block,imageTargetBlock);
             int errorTime = 0;
             string firstPage = "http://www.ihchina.cn/news_1/p/1.html";
             var lastPageNumber = DebugHelperTools.IsDebugMode()?2:WebpageHelper.GetPageLastIndex(firstPage);
@@ -29,7 +29,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 List<BsonDocument> result = new List<BsonDocument>();
                 foreach (var node in listNodes)
                 {
-                    var bson = WebpageHelper.AnalizeGeneralListInformation(node, MongodbChecker.CheckSpecialListNewsListExist);
+                    var bson = WebpageHelper.AnalizeGeneralListInformation(node, MongodbChecker.CheckSpecialListNewsListExist, imageTargetBlock);
                     if (bson == null)
                     {
                         errorTime++;

@@ -95,7 +95,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
         }
 
         public delegate bool Checker(string url);
-        public static BsonDocument AnalizeGeneralListInformation(HtmlAgilityPack.HtmlNode node, Checker checker)
+        public static BsonDocument AnalizeGeneralListInformation(HtmlAgilityPack.HtmlNode node, Checker checker,BufferBlock<string> imageTargetBlock)
         {
             var bson = new BsonDocument();
             var linkNode = node.SelectSingleNode(".//div[@class='h16']/a");
@@ -125,7 +125,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
                 var imgUrl = imageNode.Attributes["src"].Value;
                 bson.Add("img", GetSubUrl(imgUrl));
                 bson.Add("compressImg", WebImageSaver.Instance.GetComressImageName(GetSubUrl(imgUrl)));
-                WebImageSaver.Instance.ImageTargetBlock.Post(GetIhChina.MainPage + imgUrl);
+                imageTargetBlock.Post(GetIhChina.MainPage + imgUrl);
             }
             Console.WriteLine(bson.ToString());
             return bson;

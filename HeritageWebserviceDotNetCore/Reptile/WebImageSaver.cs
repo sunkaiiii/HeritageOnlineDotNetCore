@@ -18,11 +18,7 @@ namespace HeritageWebserviceDotNetCore.Reptile
         private static readonly Lazy<WebImageSaver> lazy = new Lazy<WebImageSaver>(() => new WebImageSaver());
         public static WebImageSaver Instance { get { return lazy.Value; } }
 
-        public BufferBlock<string> ImageTargetBlock { get; }
-        private WebImageSaver()
-        {
-            ImageTargetBlock = new BufferBlock<string>();
-        }
+        public BufferBlock<string> InitImageBlock() => new BufferBlock<string>();
 
         public async Task<int> SaveFileAsync(ISourceBlock<string> source)
         {

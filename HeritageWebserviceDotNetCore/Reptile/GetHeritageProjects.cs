@@ -52,13 +52,13 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
             public string Link { get; set; }
         }
 
-        public static void GetHeritageProject()
+        public static void GetHeritageProject(BufferBlock<string> imageTargetBlock)
         {
-            GetMainPageInformation();
-            GetAllProjectList();
+            GetMainPageInformation(imageTargetBlock);
+            GetAllProjectList(imageTargetBlock);
         }
 
-        private static void GetMainPageInformation()
+        private static void GetMainPageInformation(BufferBlock<string> imageTargetBlock)
         {
             var doc = WebpageHelper.GetHttpRequestDocument(PROJECT_MAIN_PAGE);
             var nodes = doc.DocumentNode.SelectNodes("//div[@class='x-wrap']/div[@class='title']/div");
@@ -222,7 +222,7 @@ namespace HeritageWebserviceReptileDotNetCore.Reptile
             return mapInformationBson;
         }
 
-        private static void GetAllProjectList()
+        private static void GetAllProjectList(BufferBlock<string> imageTargetBlock)
         {
             short errorTime = 0;
             var totalPages = DebugHelper.DebugHelperTools.IsDebugMode() ? 2 : 10;

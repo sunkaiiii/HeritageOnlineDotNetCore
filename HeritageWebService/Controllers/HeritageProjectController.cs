@@ -119,10 +119,12 @@ namespace HeritageWebServiceDotNetCore.Controllers
         [Route("/api/[controller]/GetSearchCategories")]
         [HttpGet]
         [ProducesResponseType(200)]
-        public ActionResult<Dictionary<string,string>>  GetSearchCategories()
+        public ActionResult<SearchCategory>  GetSearchCategories()
         {
             var dic = _heritageProjectService.GetAllCategories();
-            return dic;
+            var searchCategory = new SearchCategory();
+            searchCategory.SearchCategories = dic;
+            return searchCategory;
         }
 
         [Route("/api/[controller]/GetInheritatePeople")]

@@ -29,14 +29,14 @@ namespace HeritageWebServiceDotNetCore.Service
         public List<HeritageProject> GetProjectList(int pages)
         {
             int startNum = (pages - 1) * 20;
-            if(startNum<0||startNum>_heritageProject.CountDocuments(new BsonDocument()))
+            if (startNum < 0 || startNum > _heritageProject.CountDocuments(new BsonDocument()))
             {
                 return null;
             }
             return _heritageProject.Find(n => true).Skip(20 * (pages - 1)).Limit(20).ToList();
         }
 
-        public List<HeritageProject> GetFilterSearchProjectList(HeritageProject filter,int pages)
+        public List<HeritageProject> GetFilterSearchProjectList(HeritageProject filter, int pages)
         {
             var filterBson = new BsonDocument();
             //输入的筛选条件可能是不全的
@@ -45,7 +45,7 @@ namespace HeritageWebServiceDotNetCore.Service
             foreach (var filedName in typeof(HeritageProject).GetProperties())
             {
                 var filedValue = filedName.GetValue(filter);
-                if(filedValue != null && filedValue.ToString().Length>0) 
+                if (filedValue != null && filedValue.ToString().Length > 0)
                 {
                     filterBson.Add(filedName.Name.ToLower(), new BsonDocument { { "$regex", filedValue.ToString() }, { "$options", "i" } });
                 }
@@ -75,29 +75,30 @@ namespace HeritageWebServiceDotNetCore.Service
             public string Province { get; set; }
             public string Unit { get; set; }
         }
-        public Dictionary<string,HashSet<string>> GetAllCategories()
+        public Dictionary<string, string> GetAllCategories()
         {
-            var result = _heritageProject.Find(n => true).ToList();
-            var dic = new Dictionary<string, HashSet<string>>();
+            var dic = new Dictionary<string, string>();
             var returnTypes = typeof(SearchFilter).GetProperties();
-            foreach(var type in returnTypes)
+            foreach (var type in returnTypes)
             {
-                dic.Add(type.Name, new HashSet<string>());
-            }
-            foreach(var project in result)
-            {
-                foreach(var type in returnTypes)
+                var propertyName = type.Name.ToLower();
+                if (searchKeyToSearchName.ContainsKey(propertyName))
                 {
-                    var value = project.GetType().GetProperty(type.Name).GetValue(project);
-                    if(value !=null)
-                    {
-                            dic[type.Name.ToLower()].Add(value.ToString());
-                    }
-                    
+                    dic.Add(propertyName, searchKeyToSearchName[propertyName]);
                 }
             }
             return dic;
         }
+
+        private static readonly Dictionary<string, string> searchKeyToSearchName = new Dictionary<string, string>()
+        {
+            { "num","编号" },
+            { "type","类别" },
+            { "rx_time","入选批次" },
+            { "cate","项目类型" },
+            { "province","申请省份" },
+            { "unit","项目所属地区" },
+        };
 
         public HeritageInheritatePeople GetInheritatePeople(string link)
         {

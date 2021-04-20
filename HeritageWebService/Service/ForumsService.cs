@@ -27,7 +27,7 @@ namespace HeritageWebServiceDotNetCore.Service
             {
                 return new List<NewsList>();
             }
-            return _forumsList.Find(n => true).Skip(20 * (pages - 1)).Limit(20).ToList();
+            return _forumsList.Find(n => true).SortByDescending(bson=>bson.Date).Skip(20 * (pages - 1)).Limit(20).ToList();
         }
 
         public NewsDetail GetForumsDetail(string link)

@@ -29,7 +29,7 @@ namespace HeritageWebServiceDotNetCore.Service
             int startNum = (page - 1) * 20;
             if (startNum < 0 || startNum > _peopleList.CountDocuments(new BsonDocument()))
                 return null;
-            return _peopleList.Find(item => true).Skip(startNum).Limit(20).ToList();
+            return _peopleList.Find(item => true).SortByDescending(bson=>bson.Date).Skip(startNum).Limit(20).ToList();
         }
 
         public NewsDetail GetPeopleDetail(string link) => _peopleDetail.Find(item => item.Link.Equals(link)).SingleOrDefault();

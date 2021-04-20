@@ -33,7 +33,7 @@ namespace HeritageWebServiceDotNetCore.Service
             {
                 return null;
             }
-            return _heritageProject.Find(n => true).Skip(20 * (pages - 1)).Limit(20).ToList();
+            return _heritageProject.Find(n => true).SortByDescending(bson=>bson.Rx_time).Skip(20 * (pages - 1)).Limit(20).ToList();
         }
 
         public List<HeritageProject> GetFilterSearchProjectList(HeritageProject filter,int pages)

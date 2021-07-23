@@ -82,7 +82,7 @@ namespace HeritageWebServiceDotNetCore.Service
             var returnTypes = typeof(SearchFilter).GetProperties();
             foreach(var type in returnTypes)
             {
-                dic.Add(type.Name, new HashSet<string>());
+                dic.Add(type.Name.ToLower(), new HashSet<string>());
             }
             foreach(var project in result)
             {

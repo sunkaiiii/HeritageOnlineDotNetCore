@@ -33,7 +33,7 @@ namespace HeritageWebServiceDotNetCore.Service
             {
                 return null;
             }
-            return _heritageProject.Find(n => true).Skip(20 * (pages - 1)).Limit(20).ToList();
+            return _heritageProject.Find(n => true).SortByDescending(bson=>bson.Rx_time).Skip(20 * (pages - 1)).Limit(20).ToList();
         }
 
         public List<HeritageProject> GetFilterSearchProjectList(HeritageProject filter, int pages)
@@ -79,7 +79,12 @@ namespace HeritageWebServiceDotNetCore.Service
         {
             var dic = new Dictionary<string, string>();
             var returnTypes = typeof(SearchFilter).GetProperties();
-            foreach (var type in returnTypes)
+
+            foreach(var type in returnTypes)
+            {
+                dic.Add(type.Name.ToLower(), new HashSet<string>());
+            }
+            foreach(var project in result)
             {
                 var propertyName = type.Name.ToLower();
                 if (searchKeyToSearchName.ContainsKey(propertyName))
